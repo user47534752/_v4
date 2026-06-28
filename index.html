@@ -6,7 +6,7 @@
   <title>Veri Gölü Platformu</title>
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMwMDMwODciLz48cGF0aCBkPSJNMTggMTloMjh2NkgxOHptMCAxMGgyOHY2SDE4em0wIDEwaDE4djZIMTh6IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjQ3IiBjeT0iNDQiIHI9IjgiIGZpbGw9IiNmZjU2MjAiLz48L3N2Zz4=">
   <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/app.css?v=20260629-6">
+  <link rel="stylesheet" href="/static/css/app.css?v=20260629-9">
 </head>
 <body>
 <div class="app-layout">
@@ -60,12 +60,12 @@
         </div>
       </section>
 
-      <section class="wide-section-block" id="duyurular" aria-labelledby="announcementsTitle">
-        <div class="section-head-row">
-          <h2 id="announcementsTitle">Duyurular</h2>
-          <button class="all-link button-link" type="button" data-action="open-page" data-page="/announcements">Tümünü göster</button>
-        </div>
-        <div class="wide-section">
+      <section class="suite-layout announcement-layout" id="duyurular" aria-labelledby="announcementsTitle">
+        <div class="suite-container">
+          <div class="section-title-row">
+            <h2 id="announcementsTitle">Duyurular</h2>
+            <button class="all-link button-link" type="button" data-action="open-page" data-page="/announcements">Tümünü göster</button>
+          </div>
           <div class="carousel-shell announcement-carousel">
             <button class="carousel-arrow carousel-left" type="button" data-action="slide-announcements" data-direction="-1" aria-label="Önceki duyurular" hidden>‹</button>
             <div class="announce-grid" id="announcementsGrid"></div>
@@ -113,6 +113,6 @@
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="/static/js/home.js?v=20260629-6"></script>
+<script type="module" src="/static/js/home.js?v=20260629-9"></script>
 </body>
 </html>

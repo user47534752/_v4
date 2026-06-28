@@ -1,6 +1,6 @@
 import { fetchPortal } from "./api.js";
 import { escapeHtml, showToast } from "./utils.js";
-import { bindImageZoom, renderDetail } from "./ui.js?v=20260629-6";
+import { bindImageZoom, renderDetail } from "./ui.js?v=20260629-9";
 
 const PARTICLE_SETTINGS = {
   gap: 28,
@@ -40,15 +40,8 @@ function closeModal(dialog) {
 }
 
 function card(item) {
-  const imageSources = Array.isArray(item.images) ? item.images.map((src) => String(src || "").trim()).filter(Boolean) : [];
-  const preview = imageSources.length ? `
-      <div class="listing-card-media" aria-hidden="true">
-        <img src="${escapeHtml(imageSources[0])}" alt="" loading="lazy">
-        ${imageSources.length > 1 ? `<span>${imageSources.length} görsel</span>` : ""}
-      </div>` : "";
   return `
     <button class="listing-card" type="button" data-id="${item.id}">
-      ${preview}
       <h2>${escapeHtml(item.title)}</h2>
       <p>${escapeHtml(item.description)}</p>
       <span class="listing-date">${escapeHtml(item.date || "Güncel")}</span>

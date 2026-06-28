@@ -26,6 +26,7 @@ export function renderDetail(item) {
 
 let imageZoomDialog;
 let imageZoomScale = 1;
+const imageZoomPan = { x: 0, y: 0, active: false, startX: 0, startY: 0, originX: 0, originY: 0 };
 
 function ensureImageZoomDialog() {
   if (imageZoomDialog) return imageZoomDialog;
@@ -60,18 +61,64 @@ function ensureImageZoomDialog() {
     setImageZoomScale(imageZoomScale + (event.deltaY < 0 ? .15 : -.15));
   }, { passive: false });
 
+  const zoomFrame = imageZoomDialog.querySelector(".image-zoom-frame");
+  zoomFrame.addEventListener("pointerdown", (event) => {
+    const image = event.target.closest("img");
+    if (!image) return;
+    event.preventDefault();
+    imageZoomPan.active = true;
+    imageZoomPan.startX = event.clientX;
+    imageZoomPan.startY = event.clientY;
+    imageZoomPan.originX = imageZoomPan.x;
+    imageZoomPan.originY = imageZoomPan.y;
+    zoomFrame.classList.add("is-dragging");
+    zoomFrame.setPointerCapture(event.pointerId);
+  });
+
+  zoomFrame.addEventListener("pointermove", (event) => {
+    if (!imageZoomPan.active) return;
+    imageZoomPan.x = imageZoomPan.originX + event.clientX - imageZoomPan.startX;
+    imageZoomPan.y = imageZoomPan.originY + event.clientY - imageZoomPan.startY;
+    applyImageZoomTransform();
+  });
+
+  function stopDragging(event) {
+    if (!imageZoomPan.active) return;
+    imageZoomPan.active = false;
+    zoomFrame.classList.remove("is-dragging");
+    if (event?.pointerId !== undefined && zoomFrame.hasPointerCapture(event.pointerId)) {
+      zoomFrame.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  zoomFrame.addEventListener("pointerup", stopDragging);
+  zoomFrame.addEventListener("pointercancel", stopDragging);
+  zoomFrame.addEventListener("lostpointercapture", stopDragging);
+
   return imageZoomDialog;
 }
 
 function setImageZoomScale(nextScale) {
   imageZoomScale = Math.min(3, Math.max(.6, nextScale));
-  imageZoomDialog?.querySelector("img")?.style.setProperty("--image-zoom-scale", String(imageZoomScale));
+  applyImageZoomTransform();
+}
+
+function applyImageZoomTransform() {
+  const image = imageZoomDialog?.querySelector("img");
+  if (!image) return;
+  image.style.setProperty("--image-zoom-scale", String(imageZoomScale));
+  image.style.setProperty("--image-zoom-x", `${imageZoomPan.x}px`);
+  image.style.setProperty("--image-zoom-y", `${imageZoomPan.y}px`);
 }
 
 function fitZoomedImage() {
   const image = imageZoomDialog?.querySelector("img");
   if (!image) return;
   image.style.removeProperty("--image-zoom-scale");
+  image.style.removeProperty("--image-zoom-x");
+  image.style.removeProperty("--image-zoom-y");
+  imageZoomPan.x = 0;
+  imageZoomPan.y = 0;
   setImageZoomScale(1);
 }
 

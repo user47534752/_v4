@@ -702,3 +702,236 @@ Tamam, üç noktayı düzelttim:
 Cache için ana sayfa/liste sayfalarında sürümleri `20260629-6` yaptım. Kontrol olarak `node --check` temiz geçti ve çalışan server yeni dosyaları servis ediyor.
 
 ---
+
+
+**User**
+
+bu butonların hizası halen doğru değil ama bak
+
+---
+
+
+**OpenAI Codex**
+
+Görüntüye göre sorun dikeyden çok yatay: Duyurular oku kartın sol kenarına göre daha dışarıda kalmış, Birim Çalışmaları oku ise kart kenarıyla daha iç içe. Mevcut hesaplamayı CSS’te aynı referans noktasına bağlayacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Gördüm: Duyurular bloğunda içteki `.wide-section` ve carousel referansı farklı kaldığı için `left: 0` aynı görsel noktaya denk gelmiyor. Okları grid/kart sol kenarını baz alacak şekilde değil, dış shell kenarını çalışma bölümüyle aynı davranacak şekilde düzeltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Burada ölçü farkı duyuru kartlarının içinde bulunduğu `.wide-section` kabından geliyor. Duyuru carousel’inin container’ını Birim Çalışmaları container’ıyla aynı genişlik/taşma davranışına çekip okları onunla hizalayacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Okların `left` değerleri dosyada birkaç kez yazılmış; en sondaki override yetmiyor çünkü Duyurular kabı soldan farklı başlıyor. Bunu daha kesin çözmek için duyuru carousel shell’ine çalışma bölümüyle aynı sol sınırı veriyorum ve arrow transformunu ortaklaştırıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bir ek not: önce ortak transformu fazla geniş tuttum; bunu sadece Duyurular oklarına daraltıyorum ki Birim Çalışmaları’nın mevcut hizası yerinden oynamasın.
+
+---
+
+
+**OpenAI Codex**
+
+Ekrandaki fark yaklaşık 35-40px; Duyurular shell’i kartlardan daha solda başladığı için `left: 0` hâlâ dışarı düşüyor. Bu yüzden sadece Duyurular oklarını kart kenarına yaklaştıracak pozitif offset veriyorum.
+
+---
+
+
+**OpenAI Codex**
+
+CSS değiştiği için cache sürümünü bir kez daha yükseltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Sürüm güncellendi; şimdi canlı sayfada yeni CSS’in geldiğini ve ok offsetinin dosyada göründüğünü doğruluyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Haklısın, Duyurular okları hâlâ solda daha dışarı taşıyordu. Sadece Duyurular carousel oklarına pozitif offset verdim:
+
+- Sol ok: `left: 36px`
+- Sağ ok: `right: 36px`
+- Dikey merkez aynı kaldı.
+
+Ayrıca `app.css` cache sürümünü `20260629-7` yaptım, sayfa yeni CSS’i servis ediyor. Tarayıcı hâlâ eski görünümü tutarsa bir kez hard refresh iyi olur.
+
+---
+
+
+**User**
+
+fotolar da sığmıyor halen
+
+bir de bağlantılar kısmında eklenne resimlerin çerçevesi yine yuvarlatılmış olsun lütfen
+
+sol sağ okların hizasına ekte baksana halen bir sorun var birim çalışmaları doğru ama duyurular kısmında sıkıntı var bir detaylı bak henüz sornu bence bulamadın
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, bu kez semptomları ayrı ayrı değil, alttaki ölçü mantığını hedefliyorum: zoom modalında görselin kendisine `100% x 100%` zorlamak yerine doğal oranıyla `max-width/max-height` içinde kalmasını sağlayacağım; duyuru oklarında da kartın gerçek kenarını baz alacak CSS değişkeni kullanacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Ok hizasında asıl fark şu: Duyurular bölümünün dış kabı sayfa genişliğine yayılıyor, kart grid’i ise içeride offset ile başlıyor. Bu yüzden `left: 36px` gibi sabit değerler yanıltıyor. Kart grid’inin kendi sol/sağ kenarını arrow için referans yapacak şekilde container düzenini düzeltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bunu göz kararıyla itelemek yerine DOM ölçüsünü alacağım: tarayıcıda kart ve okların gerçek x konumlarını ölçüp farkı net göreceğim, sonra CSS’i ona göre bağlayacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Projede frontend test paketi yok, ama lokal Node/Python tarafında mevcutsa tarayıcı ölçümü yapabilirim. Önce kurulu araç var mı diye bakıyorum; yoksa CSS’i dosya üzerinden netleştireceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Sorunu buldum: Duyurular bölümü `wide-section` adlı farklı bir dış kabın içinde, Birim Çalışmaları ise `suite-container` içinde. İkisi aynı kart genişliğini üretiyor gibi görünse de oklar farklı container’a göre pozisyonlanıyor. Duyurular markup’ını Birim Çalışmaları ile aynı container yapısına alacağım; bu daha sağlam çözüm.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi CSS’te eski Duyurular offsetini kaldırıp iki carousel’i aynı ok mantığına döndürüyorum. Aynı patch içinde foto sığdırma ve logo çerçevesini de daha kesin hale getiriyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bu değişiklikten sonra cache’i `20260629-8` yapıyorum; özellikle CSS değişiklikleri yoksa tarayıcı eski hizayı göstermeye devam edebiliyor.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi son dosyaların canlı servis edildiğini ve Duyurular yapısının artık Birim Çalışmaları ile aynı container’da olduğunu doğruluyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bu sefer ok hizasının asıl nedenini düzelttim: Duyurular bölümü farklı bir `wide-section` kabındaydı, oklar da kartlara değil o dış kaba göre hizalanıyordu. Duyurular markup’ını Birim Çalışmaları ile aynı `suite-layout > suite-container > carousel-shell` yapısına aldım, oklar artık aynı referans noktasını kullanıyor.
+
+Ayrıca:
+- Foto zoom modalını `100dvh` tam ekran alana göre yeniden ayarladım; görsel artık `max-width/max-height` ile hem yatay hem dikey sığmaya zorlanıyor.
+- Bağlantılar kısmındaki eklenen logolar için tekrar yuvarlatılmış çerçeve ekledim.
+- CSS cache sürümü `20260629-8` oldu.
+
+Bu değişikliklerden sonra normal refresh yetmezse bir hard refresh yapman gerekebilir.
+
+---
+
+
+**User**
+
+tümünü göster menüsünde böye fotoları gösterme tıklayınca göreyim sadece 
+
+ayrıca halen ok tuşaları birim çalışmalarınının hizasında değil
+
+
+
+ayrıca anasayfada açtığım resimlerde el çıksın elle sürükleyebileyim hani drag edebileyim resmi
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, üç işi net ayırıyorum: liste sayfalarında kart içi görseli kaldıracağım, zoom modalına el/drag pan davranışı ekleyeceğim, ok hizasında da bu sefer Duyurular oklarını ayrı ayarlamak yerine aynı DOM/stil sınıfına oturtacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Liste sayfasındaki kart görseli zaten `listing.js` içinde ekleniyor, onu tamamen kaldıracağım. Zoom için de sadece “el imleci” değil, gerçek pan mantığı ekliyorum: basılı tutup sürükleyince görsel taşınacak, `Sığdır` tekrar merkeze alacak.
+
+---
+
+
+**OpenAI Codex**
+
+Kart önizlemesi çıktı. Şimdi zoom tarafında pan state’i ekliyorum; bunu görselin transformuna `translate + scale` olarak bağlayacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Drag mantığı bağlandı. Şimdi CSS’te görsel transformunu pan değerleriyle çalıştırıyorum, imleci `grab/grabbing` yapıyorum ve oklarda kalan farkı azaltmak için Duyurular grid gap/pozisyonunu Birim Çalışmaları ile birebir eşliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+CSS tarafında da bitti. Son olarak hem `ui.js` hem `listing.js` değiştiği için cache parametrelerini birlikte yükseltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+HTML sürümlerini de aynı tura çekiyorum; özellikle Tümünü Göster sayfası eski `listing.js` ile kalmasın.
+
+---
+
+
+**OpenAI Codex**
+
+Duyurular liste sayfası da aynı dosyayı kullanıyor, onu da güncelliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi syntax ve canlı servis kontrollerini yapıyorum; özellikle liste kartlarında `listing-card-media` artık çıkmamalı.
+
+---
+
+
+**OpenAI Codex**
+
+Yerel syntax temiz. Son kez server üzerinden yeni sürümlerin ve yeni davranış parçalarının geldiğini kontrol ediyorum.
+
+---

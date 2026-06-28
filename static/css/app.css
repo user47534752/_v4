@@ -187,7 +187,7 @@
   }
 
   .announcement-carousel .announce-grid {
-    --carousel-gap: 20px;
+    --carousel-gap: 22px;
   }
 
   .carousel-shell .suite-section.portal-summary-card,
@@ -520,18 +520,30 @@ body.dark-theme .links-section-head h2 {
 }
 
 .image-zoom-frame img {
+  width: auto !important;
+  height: auto !important;
   max-width: 100% !important;
   max-height: 100% !important;
   object-fit: contain !important;
+  cursor: grab !important;
+  user-select: none !important;
+  transform: translate(var(--image-zoom-x, 0), var(--image-zoom-y, 0)) scale(var(--image-zoom-scale, 1)) !important;
+  touch-action: none !important;
+}
+
+.image-zoom-frame.is-dragging img {
+  cursor: grabbing !important;
 }
 
 .link-icon:has(img) {
   width: 58px !important;
   height: 58px !important;
-  padding: 0 !important;
-  border-radius: 10px !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  padding: 6px !important;
+  border: 1px solid rgba(0,48,135,.16) !important;
+  border-radius: 14px !important;
+  background: rgba(235,241,255,.68) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.78) !important;
+  box-sizing: border-box !important;
 }
 
 .link-icon img {
@@ -541,6 +553,7 @@ body.dark-theme .links-section-head h2 {
   max-height: 58px !important;
   object-fit: contain !important;
   display: block !important;
+  border-radius: 9px !important;
 }
 
 .announcement-carousel .carousel-left {
@@ -549,4 +562,50 @@ body.dark-theme .links-section-head h2 {
 
 .announcement-carousel .carousel-right {
   right: 0 !important;
+}
+
+.wide-section {
+  overflow: visible !important;
+}
+
+.announcement-layout {
+  margin-top: 52px !important;
+}
+
+.announcement-layout .suite-container,
+.announcement-layout .carousel-shell,
+.announcement-layout .announce-grid {
+  width: 100% !important;
+  max-width: 1832px !important;
+}
+
+.announcement-carousel .carousel-left {
+  left: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.announcement-carousel .carousel-right {
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.image-zoom-modal {
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.image-zoom-surface {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.image-zoom-frame {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 72px 32px 32px !important;
+  box-sizing: border-box !important;
 }
