@@ -76,8 +76,9 @@ function renderWorks() {
   const visibleCount = visibleCarouselCount();
   els.worksGrid.innerHTML = pool.map((work, index) => {
     const isVisible = index >= state.workOffset && index < state.workOffset + visibleCount;
+    const hiddenAttrs = isVisible ? "" : ' style="visibility:hidden;opacity:0;pointer-events:none;" aria-hidden="true"';
     return `
-    <article class="suite-section portal-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-work" data-id="${work.id}">
+    <article class="suite-section portal-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-work" data-id="${work.id}"${hiddenAttrs}>
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(work.title)}</span>
         <span class="header-bg">${bgLines}</span>
@@ -95,6 +96,7 @@ function renderWorks() {
       </div>
     </article>`;
   }).join("");
+  updateCarouselVisibility(els.worksGrid, state.workOffset, visibleCount);
 }
 
 function renderAnnouncements() {
@@ -105,8 +107,9 @@ function renderAnnouncements() {
   const visibleCount = visibleCarouselCount();
   els.announcementsGrid.innerHTML = pool.map((item, index) => {
     const isVisible = index >= state.announcementOffset && index < state.announcementOffset + visibleCount;
+    const hiddenAttrs = isVisible ? "" : ' style="visibility:hidden;opacity:0;pointer-events:none;" aria-hidden="true"';
     return `
-    <article class="suite-section announcement-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-announcement" data-id="${item.id}">
+    <article class="suite-section announcement-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-announcement" data-id="${item.id}"${hiddenAttrs}>
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(item.title)}</span>
         <span class="header-bg">${bgLines}</span>
@@ -124,6 +127,7 @@ function renderAnnouncements() {
       </div>
     </article>`;
   }).join("");
+  updateCarouselVisibility(els.announcementsGrid, state.announcementOffset, visibleCount);
 }
 
 function maxCarouselOffset(itemCount) {
@@ -154,6 +158,17 @@ function setCarouselPosition(grid, offset) {
   grid.style.setProperty("--carousel-offset", String(offset));
 }
 
+function updateCarouselVisibility(grid, offset, visibleCount) {
+  Array.from(grid.children).forEach((child, index) => {
+    const isVisible = index >= offset && index < offset + visibleCount;
+    child.classList.toggle("is-active-slide", isVisible);
+    child.toggleAttribute("aria-hidden", !isVisible);
+    child.style.setProperty("visibility", isVisible ? "visible" : "hidden", "important");
+    child.style.setProperty("opacity", isVisible ? "1" : "0", "important");
+    child.style.setProperty("pointer-events", isVisible ? "auto" : "none", "important");
+  });
+}
+
 function slide(kind, direction) {
   const key = kind === "works" ? "workOffset" : "announcementOffset";
   const items = kind === "works" ? state.portal.works.filter(matchesQuery) : state.portal.announcements.filter(matchesQuery);
@@ -166,9 +181,7 @@ function slide(kind, direction) {
   setCarouselPosition(grid, nextOffset);
   
   const visibleCount = visibleCarouselCount();
-  Array.from(grid.children).forEach((child, index) => {
-    child.classList.toggle("is-active-slide", index >= nextOffset && index < nextOffset + visibleCount);
-  });
+  updateCarouselVisibility(grid, nextOffset, visibleCount);
   
   setArrowState(kind === "works" ? els.workArrows : els.announcementArrows, nextOffset, items.length);
 }

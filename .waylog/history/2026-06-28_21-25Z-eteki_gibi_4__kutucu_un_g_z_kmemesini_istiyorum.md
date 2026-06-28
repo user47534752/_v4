@@ -216,3 +216,66 @@ Yerel kontrol başarılı: ana sayfa `200` dönüyor ve servis edilen `app.css` 
 Kontrol ettim: ana sayfa `200` dönüyor ve CSS servis ediliyor. Sunucu da çalışıyor: `http://127.0.0.1:8001/`
 
 ---
+
+
+**User**
+
+ama bak sağda gözüküyor halen analamdım
+
+---
+
+
+**OpenAI Codex**
+
+Haklısın, ekrandaki sağ sızıntı hâlâ orada. Bu durumda CSS kuralı ya cache yüzünden tarayıcıya gelmiyor ya da sonradan gelen stil/DOM hali onu eziyor; şimdi bunu daha sağlam şekilde, kart üretilirken aktif olmayanları inline gizleyerek ve cache versiyonunu yükselterek çözeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Görüntüdeki durum “4. kart DOM’da hâlâ normal çiziliyor” gibi. Bu yüzden sadece CSS’e güvenmek yerine `home.js` içinde aktif olmayan kartlara `visibility:hidden` inline veriyorum; ayrıca `?v=` değerini yükselterek tarayıcının eski dosyayı kullanmasını engelleyeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi cache’i kırmak için `index.html` içindeki CSS ve JS versiyonunu yükseltiyorum. Bu değişiklik tarayıcıya “yeni dosya var” dedirtecek.
+
+---
+
+
+**OpenAI Codex**
+
+Daha sağlam katmanı ekledim. Şimdi sunucudan gelen HTML/JS gerçekten yeni versiyonu içeriyor mu diye kontrol ediyorum; sorun cache ise bu noktadan sonra normal yenilemede düzelmesi gerekir.
+
+---
+
+
+**OpenAI Codex**
+
+HTML tarafında yeni `20260629-1` versiyonu geldi. Bir kontrol komutum regex kaçışından takıldı; onu düzelterek JS’in servis edilen halinde inline gizleme kodunun varlığını tekrar doğruluyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Servis edilen JS içinde de yeni gizleme kodu var. İstersen bunu görsel olarak da doğrulamak için tarayıcı otomasyonuna bakıyorum; kuruluysa ekran görüntüsü üzerinden sağ kenarı kontrol edeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Bir şey yakaladım: eski CSS katmanında `visibility: visible !important` benzeri kurallar var. Normal inline style bazı `!important` kurallara yenilebilir; bu yüzden JS tarafında değeri `style.setProperty(..., "important")` ile basacağım. Bu artık “sağda görünme”yi CSS kavgasından çıkarıyor.
+
+---
+
+
+**OpenAI Codex**
+
+Bu son dokunuş kritik olanı: artık görünür/gizli durum inline `!important` olarak uygulanıyor. Son kez servis edilen dosyada bu kodun geldiğini kontrol ediyorum.
+
+---
