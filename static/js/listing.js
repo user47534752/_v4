@@ -24,6 +24,12 @@ const grid = document.querySelector("#listingGrid");
 const modal = document.querySelector("#detailModal");
 const modalContent = document.querySelector("#modalContent");
 
+function applyTheme(theme) {
+  document.body.classList.toggle("dark-theme", theme === "dark");
+}
+
+applyTheme(localStorage.getItem("portal-theme") || "light");
+
 function closeModal(dialog) {
   if (!dialog?.open || dialog.classList.contains("is-closing")) return;
   dialog.classList.add("is-closing");
