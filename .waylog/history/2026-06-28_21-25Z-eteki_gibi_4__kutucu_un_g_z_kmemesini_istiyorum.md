@@ -1013,3 +1013,17 @@ Kontrol ettim:
 - Duyuru kartları da `portal-summary-card` olarak basılıyor.
 
 ---
+
+
+**User**
+
+hah oldu işte bak
+
+---
+
+
+**OpenAI Codex**
+
+Süper, işte bu. Duyurular aynı yapıya geçince hizalama da kendiliğinden oturdu.
+
+---
