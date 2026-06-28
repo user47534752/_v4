@@ -16,9 +16,10 @@ export function renderDetail(item) {
   const completed = item.completed?.length ? `<h3>Tamamlanan Çalışmalar</h3><ul>${item.completed.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>` : "";
   const ongoing = item.ongoing?.length ? `<h3>Devam Eden Çalışmalar</h3><ul>${item.ongoing.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>` : "";
   const body = item.body?.length ? item.body.map((x) => `<p>${escapeHtml(x)}</p>`).join("") : "";
-  const images = item.images?.length ? `
+  const imageSources = Array.isArray(item.images) ? item.images.map((src) => String(src || "").trim()).filter(Boolean) : [];
+  const images = imageSources.length ? `
     <div class="detail-gallery">
-      ${item.images.map((src, index) => `<figure><img src="${escapeHtml(src)}" alt="${escapeHtml(item.title)} görsel ${index + 1}"></figure>`).join("")}
+      ${imageSources.map((src, index) => `<figure><img src="${escapeHtml(src)}" alt="${escapeHtml(item.title)} görsel ${index + 1}" loading="lazy"></figure>`).join("")}
     </div>` : "";
   return `<h2>${escapeHtml(item.title)}</h2>${date}<p>${escapeHtml(item.description)}</p>${images}${completed}${ongoing}${body}`;
 }
@@ -34,7 +35,7 @@ function ensureImageZoomDialog() {
     <div class="image-zoom-surface">
       <div class="image-zoom-toolbar" aria-label="Görsel yakınlaştırma">
         <button type="button" data-zoom-action="out" aria-label="Uzaklaştır">−</button>
-        <button type="button" data-zoom-action="reset" aria-label="Sıfırla">1:1</button>
+        <button type="button" data-zoom-action="reset" aria-label="Sığdır">Sığdır</button>
         <button type="button" data-zoom-action="in" aria-label="Yakınlaştır">+</button>
         <button type="button" data-zoom-action="close" aria-label="Kapat">×</button>
       </div>
@@ -79,6 +80,7 @@ export function bindImageZoom(root = document) {
     zoomedImage.src = image.currentSrc || image.src;
     zoomedImage.alt = image.alt || "";
     setImageZoomScale(1);
+    zoomedImage.onload = () => setImageZoomScale(1);
     dialog.showModal();
   });
 }

@@ -1,4 +1,4 @@
-@import url("/static/css/app.css");
+@import url("/static/css/app.css?v=20260629-3");
 
 .admin-layout {
   display: flex;
@@ -324,6 +324,7 @@
   position: absolute;
   top: 7px;
   right: 7px;
+  z-index: 5;
   width: 28px;
   height: 28px;
   border: 0;
@@ -336,6 +337,7 @@
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
+  pointer-events: auto;
   box-shadow: 0 8px 18px rgba(255,86,32,.28);
 }
 

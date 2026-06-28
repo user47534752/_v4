@@ -279,3 +279,249 @@ Bir şey yakaladım: eski CSS katmanında `visibility: visible !important` benze
 Bu son dokunuş kritik olanı: artık görünür/gizli durum inline `!important` olarak uygulanıyor. Son kez servis edilen dosyada bu kodun geldiğini kontrol ediyorum.
 
 ---
+
+
+**OpenAI Codex**
+
+Haklısın, ilk düzeltme CSS tarafında kalmış ve eski `visibility: visible !important` kuralları yüzünden ezilebiliyordu.
+
+Şimdi daha sağlam düzelttim:
+
+- [static/js/home.js](</c:/Users/o/source/birim_website_tasarımı/_v4/static/js/home.js>) içinde görünür olmayan kartlara JS ile `visibility: hidden !important` basılıyor.
+- [index.html](</c:/Users/o/source/birim_website_tasarımı/_v4/index.html>) içindeki CSS/JS versiyonu `20260629-1` yapıldı, yani tarayıcı eski dosyayı kullanmasın.
+
+Sunucudan gelen HTML ve JS’i kontrol ettim; yeni kod servis ediliyor. Sayfayı `Ctrl + F5` ile yenileyince sağdaki 4. kart artık görünmemeli.
+
+---
+
+
+**User**
+
+eline sağlık düzeldi
+
+şimdi mavi kutuckların şu smebolü hover eidnce yer değğşitşirebiliyor sabit kalırsa daha iyi olur kenarda bence böyle arası açılmasın baksana
+
+---
+
+
+**OpenAI Codex**
+
+Süper, sevindim düzeldi. Şimdi mavi kart başlığındaki sağ üst sembolün hover’da kaymasını arıyorum; muhtemelen header içindeki SVG/arka plan span’ı hover transform veya kart içi particle/overflow etkisinden etkileniyor.
+
+---
+
+
+**OpenAI Codex**
+
+Kaynağı buldum: `base.css` içinde hover olunca `.header-bg svg` için `headerLineDrift` animasyonu başlıyor; o yüzden sağ üstteki çizgiler yer değiştiriyor ve arası açılmış gibi görünüyor. Bunu son CSS katmanında kapatıp sembolü sağ üstte sabitleyeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Sembol animasyonunu kapattım. Şimdi tarayıcı cache’e takılmasın diye `app.css` versiyonunu bir kez daha yükseltiyorum ve servis edilen CSS’te kural var mı kontrol edeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+CSS versiyonu da yenilendi. Son kontrolü yapıyorum: sayfa yeni CSS’i çağırıyor mu ve sabitleme kuralı sunucudan geliyor mu.
+
+---
+
+
+**OpenAI Codex**
+
+Tamamdır, mavi başlıktaki sağ üst sembolün hover animasyonunu kapattım ve sabitledim.
+
+Değişiklik:
+- [static/css/app.css](</c:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.css>) içinde `.header-bg svg` animasyonu `none` yapıldı.
+- [index.html](</c:/Users/o/source/birim_website_tasarımı/_v4/index.html>) CSS versiyonu `20260629-2` oldu, cache’e takılmaz.
+
+Sayfayı yenileyince hover’da o çizgiler artık yer değiştirmemeli.
+
+---
+
+
+**User**
+
+sitede resim önizlerken genişlik alt üst komple sığdıurarak göstersin yakınlaştırıp gösteiyor şu an
+
+ayrıca ekteki gibi görsel ekliyorum sonra çarpıya basıp silemiyıorum
+
+ayrıca yine ekteki gibi  çalışmalar kısmına eklediğim görseller hiç önizleme olmuyor halihazırda postların ekli görrsellerini de göremiyorum
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, bu üçü aynı akışın parçaları: admin’de seçilen/var olan görsellerin yönetimi, listeleme ve detay önizleme. Önce admin JS/API veri yapısını okuyup görsel alanının nasıl kaydedildiğini netleştireceğim, sonra hem silme hem önizleme hem de modalda “sığdırarak göster” davranışını birlikte düzelteceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Okuduklarım şunu gösterdi: görseller aslında `images` alanına data URL olarak kaydediliyor, detay modalı da `item.images` varsa galeri basıyor. Silme butonu tarafında ise click yakalama var ama admin preview’in üzerindeki katman/hidden textarea/ID eşleşmesi gibi bir şey tıklamayı bozuyor olabilir. Şimdi CSS ve liste sayfası tarafını da okuyup nerede kaybolduğunu kapatacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Biraz netleşti: detay gösteren ortak kod `ui.js`, admin önizleme/silme `admin.js`, liste detayları `listing.js` kullanıyor. Şimdi üç düzeltmeyi aynı anda yapacağım: zoom penceresinde görseli kapsayıcıya tam sığdırma, admin önizlemede çarpıyı daha güvenilir yakalama, çalışma/duyuru kartlarında görsel varsa küçük önizleme şeridi gösterme.
+
+---
+
+
+**OpenAI Codex**
+
+Birkaç pratik karar aldım: detay modalındaki galeri zaten var ama kartlarda görsel izi yok, o yüzden liste kartlarına “var olan ilk görsel” önizlemesini ekleyeceğim. Admin çarpısı için de `click` beklemek yerine yakalamayı daha erken ve net yapacağım; böylece form/list row tıklamaları araya girmeyecek.
+
+---
+
+
+**OpenAI Codex**
+
+Detay gösterimini daha toleranslı yaptım: boş/bozuk görsel satırlarını ayıklıyor ve zoom açıldığında “sığdır” davranışıyla başlıyor. Şimdi admin silme ve kart önizleme tarafını düzenliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Çarpı için artık olay yakalaması en üstten yapılıyor; tıklama formun veya sağdaki liste satırının düzenleme tıklamasına karışmayacak. Sırada liste kartlarına görsel önizleme ekliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Liste kartları artık `images` varsa ilk görseli küçük medya alanı olarak gösterecek. Şimdi CSS’i ekleyip zoom penceresindeki görselin kırpılmadan tam sığmasını netleştiriyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Zoom ve liste önizleme CSS’i eklendi. Admin çarpısının üstte ve tıklanabilir kalması için küçük bir CSS sağlamlaştırması da yapacağım, sonra cache versiyonlarını yükseltip endpointlerden kontrol edeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Değişen dosyalar tarayıcı cache’ine yakalanmasın diye HTML ve import versiyonlarını güncelliyorum. Özellikle `ui.js` importu eski versiyondaydı; detay modalındaki zoom davranışının yenilenmesi için onu da yükseltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Ana sayfa versiyonları güncellendi. Şimdi çalışmalar, duyurular ve admin sayfasının versiyonlarını da aynı hatta alıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Admin CSS, `app.css`’i kendi içinde import ediyor; orada da eski cache riski kalmasın diye import URL’sine versiyon ekliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Cache tarafı da temiz. Şimdi servis edilen dosyaları ve JS sözdizimini hızlıca doğruluyorum; ardından değişiklikleri özetleyeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+JS sözdizimi temiz; admin sayfası yeni versiyonları servis ediyor. Son olarak çalışmalar/duyurular sayfası ve CSS kurallarının geldiğini kontrol ediyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Servis edilen CSS/JS’te önizleme kuralları ve yeni liste kartı kodu var. Bir küçük komutumu yanlışlıkla portsuz `127.0.0.1`e attım, o yüzden auth hatası çıktı; doğru porttaki kontroller geçti. Son olarak veri içinde görseller gerçekten geliyor mu diye API’den sayıları kontrol ediyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Yaptım. Üç konuya dokundum:
+
+- Görsel büyütme penceresi artık resmi kırpmadan/zoomlu başlatmadan, genişlik-yükseklik olarak kutuya komple sığdırıyor. `Sığdır` butonu da buna göre güncellendi.
+- Admin’de görsel önizleme üzerindeki çarpı daha sağlam yakalanıyor; liste/form tıklamasıyla karışmaması için erken event yakalama ekledim.
+- Çalışmalar/Duyurular liste kartlarında `images` varsa ilk görsel artık kart içinde önizleme olarak görünüyor; birden fazla görsel varsa sayısını da gösteriyor.
+
+Kontroller:
+- `node --check` ile `ui.js`, `admin.js`, `listing.js` temiz.
+- API’de şu an çalışmalar tarafında ilk kayıtta `3` görsel var; duyurularda kaydedilmiş görsel görünmüyor (`0`). Yani duyuru formundaki görseller kaydetmeden önce önizlemede olabilir, kaydedilmiş postta görünmesi için gönder/güncelle yapılması gerekiyor.
+
+---
+
+
+**User**
+
+ekleyebiliyorum resim ama turuncu çarpıya basınca silemiyorum istediğim resimleri
+
+çalışmalar sekmesinde hiç ekleyemiyorum resim Seçilen detay görselleri burada görünecek. hiç çıkmıyor çalışmalarda
+
+---
+
+
+**OpenAI Codex**
+
+Anladım, burada hâlâ admin tarafında iki ayrı aksaklık var: çarpı görünür ama silme işlemi forma yazılan `images` değerini güncellemiyor gibi davranıyor; çalışmalar panelinde de preview alanı/panel geçişi düzgün bağlanmıyor. Şimdi admin form akışını daha deterministik yapacağım: her formun preview alanını doğrudan kendi içinde bulacak, çarpılar formdan bağımsız net silme yapacak, panel değişince doğru formun preview’ı zorla yeniden çizilecek.
+
+---
+
+
+**OpenAI Codex**
+
+Bu davranışın ekrandaki ipucu önemli: çalışmalar panelinde boş preview bile görünmüyorsa mevcut kod preview alanını global selector ile karıştırıyor veya panel değişiminden sonra yeniden çizim kaçıyor. Bunu daha basit ve kaçamayacak hale getiriyorum: preview her zaman formun kendi içinden bulunacak, panel geçince aktif formun preview’ı tekrar çizilecek, silme de doğrudan en yakın formdan çalışacak.
+
+---
+
+
+**OpenAI Codex**
+
+Kod artık form karıştırmıyor: preview ve silme en yakın form üzerinden çalışıyor. Şimdi çarpı tıklaması halen başka eventlere düşmesin diye preview alanına özel bağımsız event listener da ekliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bu listener eklemesiyle silme yalnızca document seviyesinde değil, preview kutusunun kendi içinde de yakalanıyor. Şimdi admin versiyonunu yükseltiyorum ki eski JS kesin kullanılmasın.
+
+---
+
+
+**OpenAI Codex**
+
+Sürüm yükseldi. Şimdi JS sözdizimi ve servis edilen admin sayfası yeni dosyayı çağırıyor mu kontrol ediyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, admin tarafını daha sağlam hale getirdim.
+
+Yaptıklarım:
+- Turuncu çarpı artık en yakın formdan silme yapıyor; yanlış form/list tıklamasına karışmıyor.
+- Preview alanı artık global aramayla değil, her formun kendi içinden bulunuyor. Bu yüzden `Çalışmalar` sekmesinde de “Seçilen detay görselleri burada görünecek.” alanı görünmeli ve görsel ekleme çalışmalı.
+- Admin JS versiyonunu `20260629-4` yaptım, eski dosya cache’ten gelmesin.
+
+Kontrol: `admin.js` sözdizimi temiz, `/admin` sayfası yeni `20260629-4` dosyasını servis ediyor. Tarayıcıda admin sayfasına `Ctrl + F5` yapıp tekrar dene.
+
+---

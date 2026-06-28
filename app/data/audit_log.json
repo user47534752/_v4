@@ -1,5 +1,32 @@
 [
   {
+    "id": "log-7e62d796",
+    "created_at": "2026-06-29T00:40:37",
+    "action": "update",
+    "entity": "work",
+    "item_id": "work-8a996555",
+    "title": "dasd",
+    "details": "Kayıt açıldı ancak içerik alanlarında değişiklik algılanmadı."
+  },
+  {
+    "id": "log-acc15b6c",
+    "created_at": "2026-06-29T00:40:34",
+    "action": "update",
+    "entity": "work",
+    "item_id": "work-8a996555",
+    "title": "dasd",
+    "details": "Görseller alanı 1 görsel olacak şekilde güncellendi"
+  },
+  {
+    "id": "log-e29b07ad",
+    "created_at": "2026-06-29T00:40:23",
+    "action": "create",
+    "entity": "announcement",
+    "item_id": "ann-571941d4",
+    "title": "asdasd",
+    "details": "Duyuru eklendi; tarih, özet, 1 detay paragrafı ve 2 görsel kaydedildi."
+  },
+  {
     "id": "log-ac5c0e9e",
     "created_at": "2026-06-28T22:12:31",
     "action": "delete",

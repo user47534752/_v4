@@ -152,6 +152,10 @@ function resetForms() {
   });
 }
 
+function activeForm() {
+  return forms[state.panel] || null;
+}
+
 function setPanel(panel) {
   state.panel = panel;
   resetForms();
@@ -164,6 +168,8 @@ function setPanel(panel) {
   document.querySelector(".admin-content").classList.toggle("logs-mode", panel === "logs");
   document.querySelectorAll("[data-panel]").forEach((button) => button.classList.toggle("active", button.dataset.panel === panel));
   renderList();
+  const form = activeForm();
+  if (form) window.requestAnimationFrame(() => renderImagePreview(form));
 }
 
 function fillEditForm(item) {
@@ -215,7 +221,7 @@ function renderImagePreview(form) {
     preview.innerHTML = images.map((src, index) => `
       <figure class="preview-item">
         <img src="${escapeHtml(src)}" alt="Görsel ${index + 1}">
-        <button class="preview-remove" type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}" aria-label="Görseli kaldır">×</button>
+        <button class="preview-remove" type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}" title="Görseli kaldır" aria-label="Görseli kaldır">×</button>
       </figure>`).join("");
     preview.classList.remove("is-empty");
   } catch (err) {
@@ -241,7 +247,7 @@ function renderPendingImagePreview(form, files) {
 }
 
 function previewForForm(form) {
-  let preview = document.querySelector(`[data-preview-for='${form.id}']`);
+  let preview = form.querySelector(".image-preview");
   if (preview) return preview;
   const fileInput = form.querySelector("input[name='image_files']");
   if (!fileInput) return null;
@@ -273,10 +279,23 @@ async function handleDetailImagesChange(input) {
 }
 
 function removeImage(form, index) {
+  if (!form?.elements?.images) return;
   const images = toLines(form.elements.images.value);
+  if (index < 0 || index >= images.length) return;
   images.splice(index, 1);
   form.elements.images.value = images.join("\n");
   renderImagePreview(form);
+}
+
+function handleRemoveImageEvent(event) {
+  const removeImageButton = event.target.closest("[data-remove-image]");
+  if (!removeImageButton) return false;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
+  const form = removeImageButton.closest("form") || document.getElementById(removeImageButton.dataset.formId);
+  if (form) removeImage(form, Number(removeImageButton.dataset.removeImage));
+  return true;
 }
 
 function appendLines(textarea, values) {
@@ -299,6 +318,8 @@ async function refresh() {
 }
 
 document.addEventListener("click", async (event) => {
+  if (handleRemoveImageEvent(event)) return;
+
   const panelButton = event.target.closest("[data-panel]");
   if (panelButton) {
     setPanel(panelButton.dataset.panel);
@@ -308,13 +329,6 @@ document.addEventListener("click", async (event) => {
   const cancelButton = event.target.closest("[data-action='cancel-edit']");
   if (cancelButton) {
     resetForms();
-    return;
-  }
-
-  const removeImageButton = event.target.closest("[data-remove-image]");
-  if (removeImageButton) {
-    const form = document.querySelector(`#${removeImageButton.dataset.formId}`);
-    if (form) removeImage(form, Number(removeImageButton.dataset.removeImage));
     return;
   }
 
@@ -337,6 +351,17 @@ document.addEventListener("click", async (event) => {
     const item = itemsForPanel().find((entry) => entry.id === editRow.dataset.editId);
     if (item) fillEditForm(item);
   }
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!event.target.closest("[data-remove-image]")) return;
+  handleRemoveImageEvent(event);
+}, true);
+
+[announcementForm, workForm].forEach((form) => {
+  form.querySelector(".image-preview")?.addEventListener("click", (event) => {
+    handleRemoveImageEvent(event);
+  });
 });
 
 document.addEventListener("change", (event) => {
