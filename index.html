@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veri Dönüşüm Birimi | İç Portal</title>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMwMDMwODciLz48cGF0aCBkPSJNMTggMTloMjh2NkgxOHptMCAxMGgyOHY2SDE4em0wIDEwaDE4djZIMTh6IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjQ3IiBjeT0iNDQiIHI9IjgiIGZpbGw9IiNmZjU2MjAiLz48L3N2Zz4=">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="app-layout">
+  <header class="header">
+    <img class="header-left-corner" src="/static/img/header-left-corner.png" alt="" aria-hidden="true">
+    <svg class="header-bg-deco" viewBox="0 0 190 72" fill="none" preserveAspectRatio="none">
+      <path d="M33 0 C33 14, 38 28, 40 40 C42 50, 38 60, 32 72" stroke="#097880" stroke-width="1.3" opacity="0.85" fill="none"/>
+      <path d="M68 0 C68 14, 74 28, 77 40 C79 50, 75 60, 72 72" stroke="#097880" stroke-width="1.3" opacity="0.75" fill="none"/>
+      <path d="M98 0 C98 14, 105 28, 108 42 C110 52, 108 60, 108 72" stroke="#097880" stroke-width="1.3" opacity="0.65" fill="none"/>
+      <path d="M130 0 C130 15, 137 30, 139 42 C141 52, 143 60, 143 72" stroke="#ff5620" stroke-width="1.3" opacity="0.85" fill="none"/>
+      <path d="M168 0 C168 15, 175 30, 177 42 C179 52, 181 60, 182 72" stroke="#ff5620" stroke-width="1.3" opacity="0.7" fill="none"/>
+    </svg>
+
+    <a class="header-logo" href="/" aria-label="Ana sayfa">
+      <img class="header-logo-icon" src="/static/img/header-logo.png" alt="Veri Gölü Platformu logosu">
+    </a>
+
+    <div class="header-widgets">
+      <button class="theme-icon icon-button" type="button" data-action="toggle-theme" title="Tema değiştir" aria-label="Tema değiştir">
+        <svg class="theme-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20.2 15.3A8.1 8.1 0 0 1 8.7 3.8a8.7 8.7 0 1 0 11.5 11.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="content-overlay">
+      <div class="portal-toolbar portal-toolbar-compact" aria-label="Portal araması">
+        <label class="portal-search">
+          <span class="icon-search" aria-hidden="true"></span>
+          <input id="portalSearch" type="text" autocomplete="off" placeholder="Çalışma, duyuru veya bağlantı ara">
+          <button class="search-clear" id="searchClear" type="button" aria-label="Aramayı temizle">×</button>
+        </label>
+        <button class="search-button" type="button" data-action="run-search" aria-label="Ara">
+          <span class="search-button-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <section class="suite-layout" aria-labelledby="worksTitle">
+        <div class="suite-container">
+          <div class="section-title-row">
+            <h2 id="worksTitle">Birim Çalışmaları</h2>
+            <button class="all-link button-link" type="button" data-action="open-page" data-page="/works">Tümünü göster</button>
+          </div>
+          <div class="carousel-shell">
+            <button class="carousel-arrow carousel-left" type="button" data-action="slide-works" data-direction="-1" aria-label="Önceki çalışmalar" hidden>‹</button>
+            <div class="suite-cards" id="worksGrid"></div>
+            <button class="carousel-arrow carousel-right" type="button" data-action="slide-works" data-direction="1" aria-label="Sonraki çalışmalar" hidden>›</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="wide-section-block" id="duyurular" aria-labelledby="announcementsTitle">
+        <div class="section-head-row">
+          <h2 id="announcementsTitle">Duyurular</h2>
+          <button class="all-link button-link" type="button" data-action="open-page" data-page="/announcements">Tümünü göster</button>
+        </div>
+        <div class="wide-section">
+          <div class="carousel-shell announcement-carousel">
+            <button class="carousel-arrow carousel-left" type="button" data-action="slide-announcements" data-direction="-1" aria-label="Önceki duyurular" hidden>‹</button>
+            <div class="announce-grid" id="announcementsGrid"></div>
+            <button class="carousel-arrow carousel-right" type="button" data-action="slide-announcements" data-direction="1" aria-label="Sonraki duyurular" hidden>›</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="links-section" aria-labelledby="linksTitle">
+        <div class="links-section-head">
+          <h2 id="linksTitle">Bağlantılar</h2>
+        </div>
+        <div class="links-grid" id="linksGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <img class="footer-logo-text" src="/static/img/footer-logo.png" alt="Dijital Dönüşüm Direktörlüğü Logosu">
+    <div class="footer-container">
+      <div class="footer-info" id="footerInfo"></div>
+    </div>
+  </footer>
+</div>
+
+<dialog class="modal" id="detailModal">
+  <form method="dialog" class="modal-card">
+    <button class="modal-close" value="close" aria-label="Kapat">×</button>
+    <div id="modalContent"></div>
+  </form>
+</dialog>
+
+<dialog class="modal" id="requestModal">
+  <form class="modal-card request-form" id="requestForm">
+    <button class="modal-close" type="button" data-action="close-request" aria-label="Kapat">×</button>
+    <h2>Talep Oluştur</h2>
+    <p>Formu gönderdiğinizde FastAPI backend üzerinde kayıt numarası üretilir.</p>
+    <label>Talep türü<select id="requestType" name="request_type" required></select></label>
+    <label>Ad Soyad<input name="name" required minlength="2"></label>
+    <label>E-posta<input name="email" type="email" required></label>
+    <label>Birim<input name="unit" required minlength="2"></label>
+    <label>Açıklama<textarea name="message" required minlength="10"></textarea></label>
+    <button class="request-button" type="submit">Gönder</button>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/static/js/home.js"></script>
+</body>
+</html>

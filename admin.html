@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yönetim Paneli | Veri Dönüşüm Birimi</title>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMwMDMwODciLz48cGF0aCBkPSJNMTggMTloMjh2NkgxOHptMCAxMGgyOHY2SDE4em0wIDEwaDE4djZIMTh6IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjQ3IiBjeT0iNDQiIHI9IjgiIGZpbGw9IiNmZjU2MjAiLz48L3N2Zz4=">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-head">
+      <div class="admin-brand-image" aria-hidden="true"></div>
+      <div class="admin-panel-title">ADMIN PANELİ</div>
+    </div>
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" type="button" data-panel="announcements">Duyurular</button>
+      <button class="admin-nav-item" type="button" data-panel="works">Çalışmalar</button>
+      <button class="admin-nav-item" type="button" data-panel="links">Bağlantılar</button>
+      <button class="admin-nav-item" type="button" data-panel="logs">Değişiklik Logları</button>
+      <a class="admin-nav-item" href="/">Siteye dön</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div><h1 id="adminTitle">Duyurular</h1><div class="breadcrumb">Veri Dönüşüm Birimi / Yönetim</div></div>
+    </header>
+    <section class="admin-content">
+      <form class="admin-form" id="announcementForm">
+        <input type="hidden" name="id">
+        <h2>Duyuru Ekle</h2>
+        <input name="title" placeholder="Başlık" required>
+        <input name="date" placeholder="gg.aa.yyyy" inputmode="numeric" maxlength="10" required>
+        <textarea name="description" placeholder="Özet" required></textarea>
+        <textarea name="body" placeholder="Detay paragrafları. Her satır ayrı paragraf olur."></textarea>
+        <label class="file-label">Detay görselleri<input name="image_files" type="file" accept="image/*" multiple></label>
+        <textarea class="base64-store" name="images" aria-hidden="true" tabindex="-1"></textarea>
+        <div class="image-preview" data-preview-for="announcementForm"></div>
+        <div class="admin-form-actions">
+          <button class="btn-primary" type="submit">Duyuru Ekle</button>
+          <button class="btn-secondary is-hidden" type="button" data-action="cancel-edit">Vazgeç</button>
+        </div>
+      </form>
+      <form class="admin-form is-hidden" id="workForm">
+        <input type="hidden" name="id">
+        <h2>Çalışma Ekle</h2>
+        <input name="title" placeholder="Başlık" required>
+        <input name="date" placeholder="gg.aa.yyyy" inputmode="numeric" maxlength="10" required>
+        <textarea name="description" placeholder="Özet" required></textarea>
+        <textarea name="completed" placeholder="Tamamlanan çalışmalar. Her satır ayrı madde olur."></textarea>
+        <textarea name="ongoing" placeholder="Devam eden çalışmalar. Her satır ayrı madde olur."></textarea>
+        <label class="file-label">Detay görselleri<input name="image_files" type="file" accept="image/*" multiple></label>
+        <textarea class="base64-store" name="images" aria-hidden="true" tabindex="-1"></textarea>
+        <div class="image-preview" data-preview-for="workForm"></div>
+        <div class="admin-form-actions">
+          <button class="btn-primary" type="submit">Çalışma Ekle</button>
+          <button class="btn-secondary is-hidden" type="button" data-action="cancel-edit">Vazgeç</button>
+        </div>
+      </form>
+      <form class="admin-form is-hidden" id="linkForm">
+        <input type="hidden" name="id">
+        <h2>Bağlantı Ekle</h2>
+        <input name="label" placeholder="Bağlantı adı" required>
+        <input name="url" placeholder="URL" value="#">
+        <input name="kind" placeholder="Tür / kısa kod" value="link">
+        <textarea name="icon_src" placeholder="Base64 ikon veya data:image/..."></textarea>
+        <label class="file-label">İkon dosyası<input name="icon_file" type="file" accept="image/*"></label>
+        <div class="admin-form-actions">
+          <button class="btn-primary" type="submit">Bağlantı Ekle</button>
+          <button class="btn-secondary is-hidden" type="button" data-action="cancel-edit">Vazgeç</button>
+        </div>
+      </form>
+      <div class="admin-card-list" id="adminList"></div>
+      <div class="admin-card-list is-hidden" id="auditList"></div>
+    </section>
+  </main>
+</div>
+<script type="module" src="/static/js/admin.js"></script>
+</body>
+</html>
