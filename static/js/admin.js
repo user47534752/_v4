@@ -204,18 +204,24 @@ function fillEditForm(item) {
 function renderImagePreview(form) {
   const preview = previewForForm(form);
   if (!preview) return;
-  const images = toLines(form.elements.images?.value || "");
-  if (!images.length) {
-    preview.innerHTML = `<div class="preview-empty">Seçilen detay görselleri burada görünecek.</div>`;
+  try {
+    const images = toLines(form.elements.images?.value || "");
+    if (!images.length) {
+      preview.innerHTML = `<div class="preview-empty">Seçilen detay görselleri burada görünecek.</div>`;
+      preview.classList.add("is-empty");
+      return;
+    }
+
+    preview.innerHTML = images.map((src, index) => `
+      <figure class="preview-item">
+        <img src="${escapeHtml(src)}" alt="Görsel ${index + 1}">
+        <button class="preview-remove" type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}" aria-label="Görseli kaldır">×</button>
+      </figure>`).join("");
+    preview.classList.remove("is-empty");
+  } catch (err) {
+    preview.innerHTML = `<div class="preview-empty" style="color:red">Error in renderImagePreview: ${err.message}</div>`;
     preview.classList.add("is-empty");
-    return;
   }
-  preview.innerHTML = images.map((src, index) => `
-    <figure class="preview-item">
-      <img src="${escapeHtml(src)}" alt="Görsel ${index + 1}">
-      <button class="preview-remove" type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}" aria-label="Görseli kaldır">×</button>
-    </figure>`).join("");
-  preview.classList.remove("is-empty");
 }
 
 function renderPendingImagePreview(form, files) {
@@ -255,10 +261,10 @@ async function handleDetailImagesChange(input) {
   try {
     appendLines(form.elements.images, await filesToDataUrls(files));
     renderImagePreview(form);
-  } catch {
+  } catch (err) {
     const preview = previewForForm(form);
     if (preview) {
-      preview.innerHTML = `<div class="preview-empty">Görseller okunamadı. Lütfen tekrar seçin.</div>`;
+      preview.innerHTML = `<div class="preview-empty" style="color:red">Error in append/render: ${err.message}</div>`;
       preview.classList.add("is-empty");
     }
   } finally {

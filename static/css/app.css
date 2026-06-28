@@ -156,9 +156,20 @@
 @layer carousel {
   .carousel-shell {
     overflow: visible !important;
-    clip-path: inset(-40px -46px -54px -46px);
+    clip-path: inset(-150px -46px -150px -46px) !important;
     padding: 16px 18px 32px !important;
     margin: -16px -18px -32px !important;
+  }
+  
+  .suite-cards > article {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .suite-cards > article.is-active-slide {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .carousel-shell .suite-cards,
@@ -416,7 +427,6 @@ body.dark-theme .links-section-head h2 {
 
 .carousel-shell {
   overflow: visible !important;
-  clip-path: none !important;
   padding: 0 !important;
   margin: 0 !important;
   isolation: auto !important;
@@ -431,4 +441,18 @@ body.dark-theme .links-section-head h2 {
   mask-image: none !important;
   -webkit-mask-image: none !important;
   padding: 0 !important;
+}
+
+.carousel-shell .suite-cards > article:not(.is-active-slide),
+.announcement-carousel .announce-grid > article:not(.is-active-slide) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.carousel-shell .suite-cards > article.is-active-slide,
+.announcement-carousel .announce-grid > article.is-active-slide {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }

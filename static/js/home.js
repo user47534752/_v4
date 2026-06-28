@@ -73,8 +73,11 @@ function renderWorks() {
   state.workOffset = clampCarouselOffset(state.workOffset, pool.length);
   setCarouselPosition(els.worksGrid, state.workOffset);
   setArrowState(els.workArrows, state.workOffset, pool.length);
-  els.worksGrid.innerHTML = pool.map((work) => `
-    <article class="suite-section portal-summary-card" data-action="show-work" data-id="${work.id}">
+  const visibleCount = visibleCarouselCount();
+  els.worksGrid.innerHTML = pool.map((work, index) => {
+    const isVisible = index >= state.workOffset && index < state.workOffset + visibleCount;
+    return `
+    <article class="suite-section portal-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-work" data-id="${work.id}">
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(work.title)}</span>
         <span class="header-bg">${bgLines}</span>
@@ -90,7 +93,8 @@ function renderWorks() {
           <span class="card-footer-date">${escapeHtml(work.date || "Güncel")}</span>
         </button>
       </div>
-    </article>`).join("");
+    </article>`;
+  }).join("");
 }
 
 function renderAnnouncements() {
@@ -98,8 +102,11 @@ function renderAnnouncements() {
   state.announcementOffset = clampCarouselOffset(state.announcementOffset, pool.length);
   setCarouselPosition(els.announcementsGrid, state.announcementOffset);
   setArrowState(els.announcementArrows, state.announcementOffset, pool.length);
-  els.announcementsGrid.innerHTML = pool.map((item) => `
-    <article class="suite-section announcement-summary-card" data-action="show-announcement" data-id="${item.id}">
+  const visibleCount = visibleCarouselCount();
+  els.announcementsGrid.innerHTML = pool.map((item, index) => {
+    const isVisible = index >= state.announcementOffset && index < state.announcementOffset + visibleCount;
+    return `
+    <article class="suite-section announcement-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-announcement" data-id="${item.id}">
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(item.title)}</span>
         <span class="header-bg">${bgLines}</span>
@@ -115,7 +122,8 @@ function renderAnnouncements() {
           <span class="card-footer-date">${escapeHtml(item.date || "Güncel")}</span>
         </button>
       </div>
-    </article>`).join("");
+    </article>`;
+  }).join("");
 }
 
 function maxCarouselOffset(itemCount) {
@@ -156,6 +164,12 @@ function slide(kind, direction) {
 
   state[key] = nextOffset;
   setCarouselPosition(grid, nextOffset);
+  
+  const visibleCount = visibleCarouselCount();
+  Array.from(grid.children).forEach((child, index) => {
+    child.classList.toggle("is-active-slide", index >= nextOffset && index < nextOffset + visibleCount);
+  });
+  
   setArrowState(kind === "works" ? els.workArrows : els.announcementArrows, nextOffset, items.length);
 }
 

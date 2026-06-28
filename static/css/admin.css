@@ -301,6 +301,7 @@
 
 .preview-item {
   position: relative;
+  width: 140px;
   margin: 0;
   border: 1px solid var(--stroke-soft-200);
   border-radius: 12px;

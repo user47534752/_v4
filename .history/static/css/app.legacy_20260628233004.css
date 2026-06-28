@@ -2963,7 +2963,7 @@ body.dark-theme .button-link.all-link:hover {
 
 /* Stable carousel track: show three cards, move by exactly one card. */
 .carousel-shell {
-  overflow: visible !important;
+  overflow: hidden !important;
   padding: 8px 12px 24px !important;
   margin: -8px -12px -24px !important;
 }

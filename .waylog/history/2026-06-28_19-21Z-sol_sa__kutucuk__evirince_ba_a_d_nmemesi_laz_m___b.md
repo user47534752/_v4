@@ -948,3 +948,36 @@ Yani sorun tek satır değil; eski CSS’te üst üste binmiş `box-shadow`, `in
 admin panlinde resim ekleyince gözükecek ekli resim ise de gözükecek panelin kodları hangi odsyada peki
 
 ---
+
+
+**OpenAI Codex**
+
+Admin panelindeki görsel ekleme/önizleme kodları şu dosyalarda:
+
+- [admin.html](C:/Users/o/source/birim_website_tasarımı/_v4/admin.html:38)  
+  Formdaki dosya inputları ve önizleme alanı burada:
+  `input name="image_files"` ve `.image-preview`
+
+- [static/js/admin.js](C:/Users/o/source/birim_website_tasarımı/_v4/static/js/admin.js:205)  
+  Görsel önizlemeyi basan ana fonksiyon:
+  `renderImagePreview(form)`
+
+- [static/js/admin.js](C:/Users/o/source/birim_website_tasarımı/_v4/static/js/admin.js:249)  
+  Dosya seçilince çalışan akış:
+  `handleDetailImagesChange(input)`
+
+- [static/js/admin.js](C:/Users/o/source/birim_website_tasarımı/_v4/static/js/admin.js:335)  
+  File input değişimini yakalayan event:
+  `document.addEventListener("change", ...)`
+
+- [static/css/admin.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/admin.css:273)  
+  Önizleme kutularının görünümü:
+  `.image-preview`, `.preview-item`, `.preview-remove`
+
+- [app/main.py](C:/Users/o/source/birim_website_tasarımı/_v4/app/main.py:238)  
+  Çalışma kaydında görsellerin backend’e kaydedildiği yer:
+  `images: payload.images`
+
+Yani “resim ekleyince gözüksün, ekli resim de düzenlerken gözüksün” işinin ana merkezi `static/js/admin.js`; görünüm tarafı `static/css/admin.css`, HTML tarafı da `admin.html`.
+
+---
