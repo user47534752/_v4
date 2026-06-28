@@ -1,6 +1,6 @@
 import { fetchPortal } from "./api.js";
 import { escapeHtml, showToast } from "./utils.js";
-import { bgLines, renderDetail } from "./ui.js";
+import { bgLines, bindImageZoom, renderDetail } from "./ui.js?v=20260628-2";
 
 const PARTICLE_SETTINGS = {
   gap: 28,
@@ -391,6 +391,8 @@ document.querySelectorAll(".modal").forEach((dialog) => {
     closeModal(dialog);
   });
 });
+
+bindImageZoom(els.detailModal);
 
 els.search.addEventListener("keydown", (event) => {
   if (event.key === "Enter") runSearch();

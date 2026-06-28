@@ -107,6 +107,7 @@ async function renderLogs() {
           <span class="row-badge">${escapeHtml(actionLabel(row.action))}</span>
           <span class="row-title">${escapeHtml(row.title)}</span>
         </div>
+        <div class="log-description">${escapeHtml(logDescription(row))}</div>
         <div class="row-meta">${escapeHtml(entityLabel(row.entity))} kaydı · ${escapeHtml(formatDateTime(row.created_at))} · ID: ${escapeHtml(row.item_id)}</div>
       </div>
     </div>`).join("") || `<div class="admin-empty">Henüz değişiklik kaydı yok.</div>`;
@@ -118,6 +119,19 @@ function actionLabel(action) {
 
 function entityLabel(entity) {
   return { announcement: "Duyuru", work: "Çalışma", link: "Bağlantı" }[entity] || entity;
+}
+
+function logDescription(row) {
+  if (row.details) return row.details;
+  const entity = entityLabel(row.entity).toLocaleLowerCase("tr-TR");
+  const titleText = `"${row.title}"`;
+  const timeText = formatDateTime(row.created_at);
+  const actionText = {
+    create: `${titleText} başlıklı ${entity} kaydı ${timeText} tarihinde panele eklendi ve sitede görünür hale getirildi.`,
+    update: `${titleText} başlıklı ${entity} kaydı ${timeText} tarihinde güncellendi; başlık, tarih, açıklama, detay veya görsel alanlarında yapılan son düzenleme kayda işlendi.`,
+    delete: `${titleText} başlıklı ${entity} kaydı ${timeText} tarihinde silindi; kayıt artık ilgili liste ve ana sayfa kartlarında gösterilmiyor.`,
+  }[row.action];
+  return actionText || `${titleText} kaydı için ${row.action} işlemi ${timeText} tarihinde işlendi.`;
 }
 
 function formatDateTime(value) {
@@ -191,12 +205,33 @@ function renderImagePreview(form) {
   const preview = document.querySelector(`[data-preview-for='${form.id}']`);
   if (!preview) return;
   const images = toLines(form.elements.images?.value || "");
+  if (!images.length) {
+    preview.innerHTML = `<div class="preview-empty">Seçilen detay görselleri burada görünecek.</div>`;
+    preview.classList.add("is-empty");
+    return;
+  }
   preview.innerHTML = images.map((src, index) => `
     <figure class="preview-item">
       <img src="${escapeHtml(src)}" alt="Görsel ${index + 1}">
-      <button type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}">Kaldır</button>
+      <button class="preview-remove" type="button" data-remove-image="${index}" data-form-id="${escapeHtml(form.id)}" aria-label="Görseli kaldır">×</button>
     </figure>`).join("");
-  preview.classList.toggle("is-empty", !images.length);
+  preview.classList.remove("is-empty");
+}
+
+function renderPendingImagePreview(form, files) {
+  const preview = document.querySelector(`[data-preview-for='${form.id}']`);
+  if (!preview) return;
+  const previews = Array.from(files || []).map((file, index) => {
+    const url = URL.createObjectURL(file);
+    return `
+      <figure class="preview-item preview-item-pending">
+        <img src="${escapeHtml(url)}" alt="Seçilen görsel ${index + 1}" data-object-url="${escapeHtml(url)}">
+        <figcaption>Yükleniyor</figcaption>
+      </figure>`;
+  });
+  if (!previews.length) return;
+  preview.innerHTML = previews.join("");
+  preview.classList.remove("is-empty");
 }
 
 function removeImage(form, index) {
@@ -327,12 +362,14 @@ linkForm.addEventListener("submit", async (event) => {
 });
 
 announcementForm.elements.image_files.addEventListener("change", async (event) => {
+  renderPendingImagePreview(announcementForm, event.target.files);
   appendLines(announcementForm.elements.images, await filesToDataUrls(event.target.files));
   renderImagePreview(announcementForm);
   event.target.value = "";
 });
 
 workForm.elements.image_files.addEventListener("change", async (event) => {
+  renderPendingImagePreview(workForm, event.target.files);
   appendLines(workForm.elements.images, await filesToDataUrls(event.target.files));
   renderImagePreview(workForm);
   event.target.value = "";

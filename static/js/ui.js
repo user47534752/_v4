@@ -22,3 +22,63 @@ export function renderDetail(item) {
     </div>` : "";
   return `<h2>${escapeHtml(item.title)}</h2>${date}<p>${escapeHtml(item.description)}</p>${images}${completed}${ongoing}${body}`;
 }
+
+let imageZoomDialog;
+let imageZoomScale = 1;
+
+function ensureImageZoomDialog() {
+  if (imageZoomDialog) return imageZoomDialog;
+  imageZoomDialog = document.createElement("dialog");
+  imageZoomDialog.className = "image-zoom-modal";
+  imageZoomDialog.innerHTML = `
+    <div class="image-zoom-surface">
+      <div class="image-zoom-toolbar" aria-label="Görsel yakınlaştırma">
+        <button type="button" data-zoom-action="out" aria-label="Uzaklaştır">−</button>
+        <button type="button" data-zoom-action="reset" aria-label="Sıfırla">1:1</button>
+        <button type="button" data-zoom-action="in" aria-label="Yakınlaştır">+</button>
+        <button type="button" data-zoom-action="close" aria-label="Kapat">×</button>
+      </div>
+      <div class="image-zoom-frame">
+        <img alt="">
+      </div>
+    </div>`;
+  document.body.append(imageZoomDialog);
+
+  imageZoomDialog.addEventListener("click", (event) => {
+    if (event.target === imageZoomDialog) imageZoomDialog.close();
+    const action = event.target.closest("[data-zoom-action]")?.dataset.zoomAction;
+    if (!action) return;
+    if (action === "close") imageZoomDialog.close();
+    if (action === "reset") setImageZoomScale(1);
+    if (action === "in") setImageZoomScale(imageZoomScale + .25);
+    if (action === "out") setImageZoomScale(imageZoomScale - .25);
+  });
+
+  imageZoomDialog.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    setImageZoomScale(imageZoomScale + (event.deltaY < 0 ? .15 : -.15));
+  }, { passive: false });
+
+  return imageZoomDialog;
+}
+
+function setImageZoomScale(nextScale) {
+  imageZoomScale = Math.min(3, Math.max(.6, nextScale));
+  imageZoomDialog?.querySelector("img")?.style.setProperty("--image-zoom-scale", String(imageZoomScale));
+}
+
+export function bindImageZoom(root = document) {
+  if (!root || root.dataset?.imageZoomBound) return;
+  if (root.dataset) root.dataset.imageZoomBound = "true";
+  root.addEventListener("click", (event) => {
+    const image = event.target.closest(".detail-gallery img");
+    if (!image) return;
+    event.preventDefault();
+    const dialog = ensureImageZoomDialog();
+    const zoomedImage = dialog.querySelector("img");
+    zoomedImage.src = image.currentSrc || image.src;
+    zoomedImage.alt = image.alt || "";
+    setImageZoomScale(1);
+    dialog.showModal();
+  });
+}

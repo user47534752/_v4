@@ -1,6 +1,6 @@
 import { fetchPortal } from "./api.js";
 import { escapeHtml, showToast } from "./utils.js";
-import { renderDetail } from "./ui.js";
+import { bindImageZoom, renderDetail } from "./ui.js?v=20260628-2";
 
 const PARTICLE_SETTINGS = {
   gap: 28,
@@ -199,3 +199,5 @@ modal.addEventListener("cancel", (event) => {
   event.preventDefault();
   closeModal(modal);
 });
+
+bindImageZoom(modal);

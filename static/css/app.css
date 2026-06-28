@@ -1,6 +1,6 @@
 @import url("./app.legacy.css") layer(legacy);
 
-@layer theme, components, carousel, utilities;
+@layer theme, components, carousel, zoom, utilities;
 
 @layer theme {
   .listing-head .all-link {
@@ -49,6 +49,41 @@
 }
 
 @layer components {
+  .header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 900 !important;
+    background: rgba(255,255,255,.82) !important;
+    backdrop-filter: blur(18px) saturate(1.18) !important;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.72) inset,
+      0 16px 34px rgba(14,18,27,.10),
+      0 1px 0 rgba(0,48,135,.08) !important;
+  }
+
+  .header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -18px;
+    height: 18px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(14,18,27,.10), transparent);
+  }
+
+  .header-widgets {
+    gap: 10px !important;
+    align-items: center !important;
+  }
+
+  body.dark-theme .header {
+    background: rgba(18,18,18,.84) !important;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.06) inset,
+      0 18px 36px rgba(0,0,0,.36) !important;
+  }
+
   .header-widgets .theme-icon.icon-button {
     align-items: center !important;
     justify-content: center !important;
@@ -120,9 +155,10 @@
 
 @layer carousel {
   .carousel-shell {
-    overflow: hidden !important;
-    padding: 8px 12px 24px !important;
-    margin: -8px -12px -24px !important;
+    overflow: visible !important;
+    clip-path: inset(-40px -46px -54px -46px);
+    padding: 16px 18px 32px !important;
+    margin: -16px -18px -32px !important;
   }
 
   .carousel-shell .suite-cards,
@@ -159,10 +195,186 @@
   .carousel-right {
     right: 0 !important;
   }
+
+  .carousel-arrow {
+    border-color: rgba(255,86,32,.38) !important;
+    color: var(--secondary-base) !important;
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255,255,255,.98), rgba(255,246,242,.92)),
+      linear-gradient(135deg, rgba(255,86,32,.12), rgba(0,48,135,.06)) !important;
+    box-shadow:
+      0 12px 28px rgba(255,86,32,.14),
+      0 0 0 4px rgba(255,246,242,.72) !important;
+  }
+
+  .carousel-arrow:hover:not(:disabled) {
+    background: var(--secondary-base) !important;
+    color: #fff !important;
+    border-color: var(--secondary-base) !important;
+    box-shadow:
+      0 18px 38px rgba(255,86,32,.26),
+      0 0 0 7px rgba(255,86,32,.12) !important;
+  }
+
+  .carousel-arrow.is-disabled,
+  .carousel-arrow:disabled {
+    opacity: .28 !important;
+    filter: grayscale(.25) saturate(.65);
+    cursor: default !important;
+    box-shadow: 0 6px 14px rgba(14,18,27,.06) !important;
+  }
+
+  .carousel-arrow.is-disabled:hover,
+  .carousel-arrow:disabled:hover {
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255,255,255,.98), rgba(255,246,242,.92)),
+      linear-gradient(135deg, rgba(255,86,32,.12), rgba(0,48,135,.06)) !important;
+    color: var(--secondary-base) !important;
+    transform: translateY(-50%) !important;
+  }
+
+  body.dark-theme .carousel-arrow {
+    background:
+      radial-gradient(circle at 34% 30%, rgba(39,35,32,.98), rgba(24,24,24,.94)),
+      linear-gradient(135deg, rgba(255,86,32,.20), rgba(126,158,230,.08)) !important;
+    border-color: rgba(255,86,32,.46) !important;
+    color: #ff9a79 !important;
+    box-shadow:
+      0 14px 30px rgba(0,0,0,.26),
+      0 0 0 4px rgba(255,86,32,.10) !important;
+  }
+}
+
+@layer zoom {
+  .detail-gallery figure {
+    cursor: zoom-in;
+  }
+
+  .detail-gallery img {
+    transition: transform .2s ease, filter .2s ease;
+  }
+
+  .detail-gallery figure:hover img {
+    transform: scale(1.025);
+    filter: saturate(1.04) contrast(1.03);
+  }
+
+  .image-zoom-modal {
+    width: min(94vw, 1180px);
+    height: min(88vh, 820px);
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: #fff;
+    overflow: visible;
+  }
+
+  .image-zoom-modal::backdrop {
+    background: rgba(6,10,18,.82);
+    backdrop-filter: blur(10px);
+  }
+
+  .image-zoom-surface {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+  }
+
+  .image-zoom-toolbar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 999px;
+    background: rgba(17,24,39,.72);
+    box-shadow: 0 18px 42px rgba(0,0,0,.28);
+    backdrop-filter: blur(14px);
+  }
+
+  .image-zoom-toolbar button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .image-zoom-toolbar button:hover {
+    background: var(--secondary-base);
+  }
+
+  .image-zoom-toolbar [data-zoom-action="reset"] {
+    width: auto;
+    min-width: 42px;
+    padding: 0 10px;
+    border-radius: 999px;
+  }
+
+  .image-zoom-frame {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    overflow: auto;
+    border-radius: 14px;
+  }
+
+  .image-zoom-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transform: scale(var(--image-zoom-scale, 1));
+    transition: transform .16s ease;
+    transform-origin: center;
+    box-shadow: 0 22px 60px rgba(0,0,0,.34);
+  }
 }
 
 @layer utilities {
   .carousel-arrow[hidden] {
     display: none !important;
   }
+}
+
+/* Keep carousel wrappers invisible while preserving card overflow. */
+.suite-layout,
+.suite-container,
+.wide-section-block,
+.wide-section,
+.wide-section:hover,
+.announcement-carousel,
+.carousel-shell,
+.carousel-shell:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.carousel-shell {
+  overflow: visible !important;
+  clip-path: none !important;
+  padding: 18px 16px 34px !important;
+  margin: -18px -16px -34px !important;
+  isolation: auto !important;
+}
+
+.carousel-shell .suite-cards,
+.announcement-carousel .announce-grid {
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }

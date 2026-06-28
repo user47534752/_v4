@@ -68,7 +68,7 @@ def write_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def audit(action: str, entity: str, item_id: str, title: str) -> None:
+def audit(action: str, entity: str, item_id: str, title: str, details: str = "") -> None:
     rows = read_json(AUDIT_FILE, [])
     rows.insert(0, {
         "id": f"log-{str(uuid4())[:8]}",
@@ -77,8 +77,32 @@ def audit(action: str, entity: str, item_id: str, title: str) -> None:
         "entity": entity,
         "item_id": item_id,
         "title": title,
+        "details": details,
     })
-    write_json(AUDIT_FILE, rows)
+    write_json(AUDIT_FILE, rows[:300])
+
+
+def count_label(values: list[str], singular: str, plural: str) -> str:
+    count = len(values or [])
+    return f"{count} {singular if count == 1 else plural}"
+
+
+def describe_changes(before: dict, after: dict, labels: dict[str, str]) -> str:
+    changes = []
+    for key, label in labels.items():
+        old = before.get(key)
+        new = after.get(key)
+        if old == new:
+            continue
+        if key == "images":
+            changes.append(f"{label} alanı {count_label(new or [], 'görsel', 'görsel')} olacak şekilde güncellendi")
+        elif isinstance(new, list):
+            changes.append(f"{label} alanı {count_label(new, 'öğe', 'öğe')} olacak şekilde güncellendi")
+        elif new:
+            changes.append(f"{label} alanı güncellendi")
+        else:
+            changes.append(f"{label} alanı temizlendi")
+    return "; ".join(changes) if changes else "Kayıt açıldı ancak içerik alanlarında değişiklik algılanmadı."
 
 
 def validate_portal_date(value: str) -> str:
@@ -154,7 +178,13 @@ def add_announcement(payload: AnnouncementPayload):
     data.setdefault("announcements", []).insert(0, item)
     data["meta"]["notification_count"] = len(data.get("announcements", []))
     write_json(CONTENT_FILE, data)
-    audit("create", "announcement", item["id"], item["title"])
+    audit(
+        "create",
+        "announcement",
+        item["id"],
+        item["title"],
+        f"Duyuru eklendi; tarih, özet, {count_label(item.get('body', []), 'detay paragrafı', 'detay paragrafı')} ve {count_label(item.get('images', []), 'görsel', 'görsel')} kaydedildi.",
+    )
     return {"ok": True, "item": item}
 
 
@@ -172,7 +202,13 @@ def update_announcement(item_id: str, payload: AnnouncementPayload):
             }
             items[index] = updated
             write_json(CONTENT_FILE, data)
-            audit("update", "announcement", item_id, updated["title"])
+            audit("update", "announcement", item_id, updated["title"], describe_changes(item, updated, {
+                "title": "Başlık",
+                "date": "Tarih",
+                "description": "Özet",
+                "body": "Detay paragrafları",
+                "images": "Görseller",
+            }))
             return {"ok": True, "item": updated}
     raise HTTPException(status_code=404, detail="Announcement not found.")
 
@@ -187,7 +223,7 @@ def delete_announcement(item_id: str):
         raise HTTPException(status_code=404, detail="Announcement not found.")
     data["meta"]["notification_count"] = len(data.get("announcements", []))
     write_json(CONTENT_FILE, data)
-    audit("delete", "announcement", item_id, deleted.get("title", item_id) if deleted else item_id)
+    audit("delete", "announcement", item_id, deleted.get("title", item_id) if deleted else item_id, "Duyuru silindi; ana sayfa ve duyurular listesinden kaldırıldı.")
     return {"ok": True}
 
 
@@ -202,7 +238,13 @@ def add_work(payload: WorkPayload):
     }
     data.setdefault("works", []).insert(0, item)
     write_json(CONTENT_FILE, data)
-    audit("create", "work", item["id"], item["title"])
+    audit(
+        "create",
+        "work",
+        item["id"],
+        item["title"],
+        f"Çalışma eklendi; özet, {count_label(item.get('completed', []), 'tamamlanan madde', 'tamamlanan madde')}, {count_label(item.get('ongoing', []), 'devam eden madde', 'devam eden madde')} ve {count_label(item.get('images', []), 'görsel', 'görsel')} kaydedildi.",
+    )
     return {"ok": True, "item": item}
 
 
@@ -221,7 +263,14 @@ def update_work(item_id: str, payload: WorkPayload):
             }
             items[index] = updated
             write_json(CONTENT_FILE, data)
-            audit("update", "work", item_id, updated["title"])
+            audit("update", "work", item_id, updated["title"], describe_changes(item, updated, {
+                "title": "Başlık",
+                "date": "Tarih",
+                "description": "Özet",
+                "completed": "Tamamlanan çalışmalar",
+                "ongoing": "Devam eden çalışmalar",
+                "images": "Görseller",
+            }))
             return {"ok": True, "item": updated}
     raise HTTPException(status_code=404, detail="Work not found.")
 
@@ -235,7 +284,7 @@ def delete_work(item_id: str):
     if len(data["works"]) == before:
         raise HTTPException(status_code=404, detail="Work not found.")
     write_json(CONTENT_FILE, data)
-    audit("delete", "work", item_id, deleted.get("title", item_id) if deleted else item_id)
+    audit("delete", "work", item_id, deleted.get("title", item_id) if deleted else item_id, "Çalışma silindi; ana sayfa ve çalışmalar listesinden kaldırıldı.")
     return {"ok": True}
 
 
@@ -248,7 +297,7 @@ def add_link(payload: LinkPayload):
     }
     data.setdefault("links", []).append(item)
     write_json(CONTENT_FILE, data)
-    audit("create", "link", item["id"], item["label"])
+    audit("create", "link", item["id"], item["label"], "Bağlantı eklendi; ad, URL, tür ve varsa ikon bilgisi kaydedildi.")
     return {"ok": True, "item": item}
 
 
@@ -265,7 +314,12 @@ def update_link(item_id: str, payload: LinkPayload):
             }
             items[index] = updated
             write_json(CONTENT_FILE, data)
-            audit("update", "link", item_id, updated["label"])
+            audit("update", "link", item_id, updated["label"], describe_changes(item, updated, {
+                "label": "Bağlantı adı",
+                "url": "URL",
+                "kind": "Tür",
+                "icon_src": "İkon",
+            }))
             return {"ok": True, "item": updated}
     raise HTTPException(status_code=404, detail="Link not found.")
 
@@ -279,7 +333,7 @@ def delete_link(item_id: str):
     if len(data["links"]) == before:
         raise HTTPException(status_code=404, detail="Link not found.")
     write_json(CONTENT_FILE, data)
-    audit("delete", "link", item_id, deleted.get("label", item_id) if deleted else item_id)
+    audit("delete", "link", item_id, deleted.get("label", item_id) if deleted else item_id, "Bağlantı silindi; bağlantılar alanından kaldırıldı.")
     return {"ok": True}
 
 
