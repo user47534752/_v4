@@ -1,6 +1,6 @@
 import { fetchPortal } from "./api.js";
 import { escapeHtml, showToast } from "./utils.js";
-import { bgLines, bindImageZoom, renderDetail } from "./ui.js?v=20260628-2";
+import { bgLines, bindImageZoom, renderDetail } from "./ui.js?v=20260628-3";
 
 const PARTICLE_SETTINGS = {
   gap: 28,

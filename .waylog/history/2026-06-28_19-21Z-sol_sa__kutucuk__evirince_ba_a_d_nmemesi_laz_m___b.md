@@ -799,3 +799,152 @@ Kontrol ettim:
 Tarayıcıda bir kere normal yenilemen yeterli olmalı; yine boş görünürse `Ctrl+F5` yap, çünkü bu son problem net cache kokuyor.
 
 ---
+
+
+**User**
+
+bu başlıkların font büyüklüklerini eşitle lütfen
+
+halen ktucuk çevresinde keskin şu çizgiler duruyor
+
+---
+
+
+**OpenAI Codex**
+
+Evet, o çizgi artık karttan değil carousel alanının kendi “mask/clip” sınırından geliyor gibi duruyor. Başlık fontlarını da aynı seviyeye sabitleyip, carousel kabının altında görünen yapay bandı tamamen kaldıracak daha dar bir CSS düzeltmesi yapıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Başlık farkını gördüm: bazıları eski bloktan `h2` özel stili alıyor, bazıları normal kalıyor. Çizgi/bant için de legacy CSS’te `::before/::after` ve eski carousel clip kuralları çok yerden geliyor; onları daha kapsamlı kapatacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Düzeltmeyi yaptım; ayrıca cache yine yanıltmasın diye CSS/JS versiyonunu bir kez daha artıracağım. Bu tarz görsel CSS düzeltmelerinde tarayıcı eski `app.css?v=...` dosyasını tutarsa “değişmedi” gibi görünebiliyor.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi hızlı doğrulama yapıyorum: JS importları sağlam mı, yeni versiyonlu dosyalar sunucudan geliyor mu.
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, ikisini de düzelttim.
+
+- `Birim Çalışmaları`, `Duyurular`, `Bağlantılar` başlık fontlarını aynı ölçüye sabitledim: `18px / 24px`, `font-weight: 900`.
+- Kartların çevresindeki keskin dikdörtgen/bant için carousel ve section wrapper’larının `::before/::after`, mask, clip, background ve shadow etkilerini kapattım.
+- Carousel shell padding/margin kaynaklı yapay panel hissini de sıfırladım.
+- Cache karışmasın diye asset versiyonunu `20260628-3` yaptım.
+
+Kontrol:
+- `node --check` temiz.
+- Yeni `app.css?v=20260628-3` ve `home.js?v=20260628-3` 200 dönüyor.
+
+Tarayıcıda normal yenile; eski görünürse bir kez `Ctrl+F5` yap.
+
+---
+
+
+**User**
+
+halen admin panelinde yüklediğim resimle gözükmüyor maalesef
+
+INFO:     Started reloader process [4980] using StatReload
+INFO:     Started server process [37696]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:51060 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51060 - "GET /static/css/base.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51062 - "GET /static/js/home.js?v=20260628-3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51061 - "GET /static/css/app.css?v=20260628-3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51061 - "GET /static/img/footer-logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51062 - "GET /static/css/app.legacy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51062 - "GET /static/js/ui.js?v=20260628-3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51062 - "GET /api/portal?ts=1782677193993 HTTP/1.1" 200 OK
+
+sorun var mı terminal kodlarına 
+
+bu arada ekteki gibi halne kutuck çevresinde kalmış bu efekt bu hangi kod veya kodlardan ötürü bana onları söyler misin
+
+---
+
+
+**OpenAI Codex**
+
+Terminal loglarında sorun görünmüyor: `304 Not Modified` normal cache cevabı, `home.js?v=...`, `app.css?v=...`, `ui.js?v=...` 200 dönmüş. Admin önizleme için ise ekrandaki form bana cache/eski dosya kokusu veriyor, ama bunu yalnız cache’e bağlamadan daha sağlam hale getiriyorum: file input değişimini form seviyesinde yakalayacağım ve önizlemeyi file input’ın hemen altına zorla basacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Admin için doğrudan input’a bağlı listener yerine sayfa genelinden yakalayan daha sağlam bir akışa geçiriyorum. Bu sayede form yeniden çizilse, panel değişse veya tarayıcı eski state’te kalsa bile `name="image_files"` değişimini yakalayıp önizlemeyi basacak.
+
+---
+
+
+**OpenAI Codex**
+
+Önizleme tarafını güçlendirdim. Şimdi kart çevresindeki mavi dikdörtgen efektin hangi kurallardan geldiğini netleştiriyorum: büyük parça kartın kendi shadow’u ve hover particle/canvas katmanları; ayrıca eski CSS’te `suite-section::before/::after` blokları var. İstersen onları da tamamen sadeleştirebilirim.
+
+---
+
+
+**OpenAI Codex**
+
+Önizleme kodu artık daha dayanıklı. Bir de ekran görüntüsündeki “Duyurular” sayfasında form başlığının “Bağlantı Ekle” görünmesi mevcut dosyalarla mümkün değil; bu kesin şekilde eski admin JS/HTML’in tarayıcıda kalmış olabileceğini gösteriyor. Admin asset versiyonunu `20260628-4` yaptım.
+
+---
+
+
+**OpenAI Codex**
+
+Admin görsel önizleme tarafını tekrar güçlendirdim.
+
+- `admin.js` artık dosya seçimini sayfa genelinden yakalıyor: `input[type="file"][name="image_files"]`
+- Önizleme alanı yoksa JS kendisi oluşturuyor.
+- Dosya seçildiği anda geçici önizleme basıyor, sonra base64’e çevirip kalıcı önizlemeye dönüyor.
+- Admin asset versiyonu `20260628-4` oldu:
+  - `/static/js/admin.js?v=20260628-4`
+  - `/static/css/admin.css?v=20260628-4`
+
+Terminal loglarında sorun yok. `304 Not Modified` normal cache cevabı. Ama admin ekranındaki “Duyurular” altında “Bağlantı Ekle” görünmesi mevcut kaynakla mümkün değil; bu kesin eski cache/state belirtisi. Admin’de `Ctrl+F5` yapmanı öneririm.
+
+Kart çevresindeki efektin ana kaynakları şunlar:
+
+- [static/css/app.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.css:103)
+  Kartlara verilen temel `box-shadow`.
+
+- [static/css/app.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.css:121)
+  Hover olunca gelen daha büyük gölge.
+
+- [static/css/app.legacy.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.legacy.css:2465)
+  Eski CSS’te kartlara verilen `inset` ve dış gölge. O mavi/dikdörtgen hissin en kuvvetli kaynağı bu.
+
+- [static/css/app.legacy.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.legacy.css:2483)
+  Hover’daki aşırı büyük mavi gölge.
+
+- [static/css/app.legacy.css](C:/Users/o/source/birim_website_tasarımı/_v4/static/css/app.legacy.css:2491)
+  `.card-particles` geçişi; kart içindeki parçacık/canvas efektiyle birlikte o yapay alan hissini artırıyor.
+
+Yani sorun tek satır değil; eski CSS’te üst üste binmiş `box-shadow`, `inset shadow`, `card-particles` ve hover kuralları.
+
+---
+
+
+**User**
+
+admin panlinde resim ekleyince gözükecek ekli resim ise de gözükecek panelin kodları hangi odsyada peki
+
+---

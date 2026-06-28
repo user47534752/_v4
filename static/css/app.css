@@ -349,6 +349,24 @@
 }
 
 /* Keep carousel wrappers invisible while preserving card overflow. */
+.section-title-row h2,
+.section-head-row h2,
+.links-section-head h2 {
+  margin: 0 !important;
+  color: var(--text-strong-950) !important;
+  font-size: 18px !important;
+  line-height: 24px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+body.dark-theme .section-title-row h2,
+body.dark-theme .section-head-row h2,
+body.dark-theme .links-section-head h2 {
+  color: var(--text-strong-950) !important;
+}
+
+.content-overlay,
 .suite-layout,
 .suite-container,
 .wide-section-block,
@@ -356,19 +374,51 @@
 .wide-section:hover,
 .announcement-carousel,
 .carousel-shell,
-.carousel-shell:hover {
+.carousel-shell:hover,
+.suite-layout::before,
+.suite-layout::after,
+.suite-container::before,
+.suite-container::after,
+.wide-section-block::before,
+.wide-section-block::after,
+.wide-section::before,
+.wide-section::after,
+.announcement-carousel::before,
+.announcement-carousel::after,
+.carousel-shell::before,
+.carousel-shell::after {
   background: transparent !important;
   background-color: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
+
+.suite-layout::before,
+.suite-layout::after,
+.suite-container::before,
+.suite-container::after,
+.wide-section-block::before,
+.wide-section-block::after,
+.wide-section::before,
+.wide-section::after,
+.announcement-carousel::before,
+.announcement-carousel::after,
+.carousel-shell::before,
+.carousel-shell::after {
+  content: none !important;
+  display: none !important;
 }
 
 .carousel-shell {
   overflow: visible !important;
   clip-path: none !important;
-  padding: 18px 16px 34px !important;
-  margin: -18px -16px -34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
   isolation: auto !important;
 }
 
@@ -377,4 +427,8 @@
   background: transparent !important;
   box-shadow: none !important;
   overflow: visible !important;
+  clip-path: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  padding: 0 !important;
 }

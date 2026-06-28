@@ -275,17 +275,23 @@
   grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
   gap: 12px;
   min-height: 74px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid rgba(0,48,135,.10);
+  border-radius: 12px;
+  background: rgba(247,249,252,.72);
 }
 
 .image-preview.is-empty {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .preview-empty {
   display: grid;
   min-height: 74px;
   place-items: center;
-  border: 1px dashed rgba(0,48,135,.24);
+  border: 1px dashed rgba(0,48,135,.28);
   border-radius: 12px;
   background: rgba(0,48,135,.035);
   color: var(--text-sub-600);

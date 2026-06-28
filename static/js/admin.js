@@ -202,7 +202,7 @@ function fillEditForm(item) {
 }
 
 function renderImagePreview(form) {
-  const preview = document.querySelector(`[data-preview-for='${form.id}']`);
+  const preview = previewForForm(form);
   if (!preview) return;
   const images = toLines(form.elements.images?.value || "");
   if (!images.length) {
@@ -219,7 +219,7 @@ function renderImagePreview(form) {
 }
 
 function renderPendingImagePreview(form, files) {
-  const preview = document.querySelector(`[data-preview-for='${form.id}']`);
+  const preview = previewForForm(form);
   if (!preview) return;
   const previews = Array.from(files || []).map((file, index) => {
     const url = URL.createObjectURL(file);
@@ -232,6 +232,38 @@ function renderPendingImagePreview(form, files) {
   if (!previews.length) return;
   preview.innerHTML = previews.join("");
   preview.classList.remove("is-empty");
+}
+
+function previewForForm(form) {
+  let preview = document.querySelector(`[data-preview-for='${form.id}']`);
+  if (preview) return preview;
+  const fileInput = form.querySelector("input[name='image_files']");
+  if (!fileInput) return null;
+  preview = document.createElement("div");
+  preview.className = "image-preview is-empty";
+  preview.dataset.previewFor = form.id;
+  fileInput.closest(".file-label")?.after(preview);
+  return preview;
+}
+
+async function handleDetailImagesChange(input) {
+  const form = input.closest("form");
+  if (!form || !form.elements.images) return;
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+  renderPendingImagePreview(form, files);
+  try {
+    appendLines(form.elements.images, await filesToDataUrls(files));
+    renderImagePreview(form);
+  } catch {
+    const preview = previewForForm(form);
+    if (preview) {
+      preview.innerHTML = `<div class="preview-empty">Görseller okunamadı. Lütfen tekrar seçin.</div>`;
+      preview.classList.add("is-empty");
+    }
+  } finally {
+    input.value = "";
+  }
 }
 
 function removeImage(form, index) {
@@ -301,6 +333,11 @@ document.addEventListener("click", async (event) => {
   }
 });
 
+document.addEventListener("change", (event) => {
+  const input = event.target.closest("input[type='file'][name='image_files']");
+  if (input) handleDetailImagesChange(input);
+});
+
 announcementForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!validateDateInput(announcementForm.elements.date)) {
@@ -359,20 +396,6 @@ linkForm.addEventListener("submit", async (event) => {
   else await createLink(payload);
   await refresh();
   resetForms();
-});
-
-announcementForm.elements.image_files.addEventListener("change", async (event) => {
-  renderPendingImagePreview(announcementForm, event.target.files);
-  appendLines(announcementForm.elements.images, await filesToDataUrls(event.target.files));
-  renderImagePreview(announcementForm);
-  event.target.value = "";
-});
-
-workForm.elements.image_files.addEventListener("change", async (event) => {
-  renderPendingImagePreview(workForm, event.target.files);
-  appendLines(workForm.elements.images, await filesToDataUrls(event.target.files));
-  renderImagePreview(workForm);
-  event.target.value = "";
 });
 
 [announcementForm, workForm].forEach((form) => {
