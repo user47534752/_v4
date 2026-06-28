@@ -3,7 +3,7 @@
     "eyebrow": "Veri Dönüşüm Birimi · İç Portal",
     "title": "Veriyi anlamlı, güvenilir ve erişilebilir hale getiriyoruz.",
     "description": "Kurumsal veri ambarı, veri yönetişimi ve veri kalitesi çalışmalarımıza buradan ulaşabilir, birim duyurularını takip edebilirsiniz.",
-    "notification_count": 2,
+    "notification_count": 4,
     "profile": "VD",
     "contact_email": "veri.donusum@aselsan.com",
     "helpdesk_name": "Veri Yön. ve Yapay Zeka Mimarileri Müdürlüğü Yardım Masası"
@@ -53,13 +53,13 @@
       "title": "Veri Yönetişimi",
       "date": "28.06.2026",
       "status": "active",
-      "badge": "Devam Ediyor",
+      "badge": "",
       "description": "ASELSAN genelinde tutarlı bir veri yapısı oluşturmayı ve veri kalitesini artırmayı hedefleyen faaliyetler bütünüdür.",
       "completed": [
         "İş birimleri ile mevcut durum analizi görüşmeleri yapıldı.",
         "Mevcut Durum Analizi Raporu yayınlandı.",
         "ASELSAN Kurumsal Veri Sözlüğü yapısı ve parametreleri belirlendi.",
-        "DDD Veri Muhafızları tarafından Kurumsal Veri Sözlüğü’nün ilk kayıtları olan SAP’deki ana veriler çıkarıldı.",
+        "DDD Veri Muhafızları tarafından Kurasdasdumsal Veri Sözlüğü’nün ilk kayıtları olan SAP’deki ana veriler çıkarıldı.",
         "Veri yönetişimi rolleri ASELSAN için tanımlandı.",
         "Veri Yönetişimi İzleci paydaşlara görüşe açıldı, görüşler konsolide edilerek izleç nihai hale getirildi.",
         "Veri Yönetişimi Platformu’nun edinimi gerçekleştirildi.",
@@ -68,17 +68,13 @@
       "ongoing": [
         "Veri Yönetişimi Platformu’nun devreye alınması.",
         "İş birimlerindeki Veri Sahipleri ile Kurumsal Veri Sözlüğü’ndeki ilk kayıtların (SAP ana veriler) nihai hale getirilmesi.",
-        "SAP ve non-SAP sistemlerin verilerinin çıkarılması.",
-        "KRP metriklerinin ve objelerinin çıkarılması.",
+        "SAP ve non-SAP sistemlerin verileriasdnin çıkarılması.",
+        "KRP metriklerinin ve objelerinin çıkarılması.asdasd",
         "Veri kalitesi metriklerinin belirlenmesi ve ölçümlerin başlatılması.",
         "Veri yönetişimi akışlarına yönelik eğitimlerin verilmesi."
       ],
-      "tags": [
-        "yönetişim",
-        "veri kalitesi",
-        "veri sahipliği",
-        "kurumsal model"
-      ]
+      "tags": [],
+      "images": []
     },
     {
       "id": "atlas",
@@ -104,6 +100,30 @@
     }
   ],
   "announcements": [
+    {
+      "id": "ann-17469765",
+      "title": "asdasd",
+      "date": "29.06.2026",
+      "badge": "",
+      "type": "default",
+      "description": "asdasd",
+      "body": [
+        "asdasd"
+      ],
+      "images": []
+    },
+    {
+      "id": "ann-f8d57470",
+      "title": "sdasdasdasdasd",
+      "date": "29.06.2026",
+      "badge": "",
+      "type": "default",
+      "description": "dasda",
+      "body": [
+        "asdas"
+      ],
+      "images": []
+    },
     {
       "id": "ann-571941d4",
       "title": "asdasd",
@@ -166,7 +186,7 @@
       "label": "Yardım Masası",
       "kind": "chat",
       "url": "#",
-      "icon_src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHJ4PSIxNCIgZmlsbD0iIzcxNzc4NCIvPjx0ZXh0IHg9IjI0IiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSJ3aGl0ZSI+WTwvdGV4dD48L3N2Zz4="
+      "icon_src": "data:image/jpeg;base64,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"
     },
     {
       "id": "team",

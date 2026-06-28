@@ -11,7 +11,7 @@ import {
   updateLink,
   updateWork,
 } from "./api.js";
-import { escapeHtml, toLines } from "./utils.js";
+import { escapeHtml, showToast, toLines } from "./utils.js";
 
 const state = { portal: null, panel: "announcements" };
 const list = document.querySelector("#adminList");
@@ -79,6 +79,27 @@ function labelForPanel() {
     links: "Bağlantılar",
     logs: "Değişiklik Logları",
   }[state.panel];
+}
+
+function entityNameForPanel(panel = state.panel) {
+  return {
+    announcements: "Duyuru",
+    works: "Çalışma",
+    links: "Bağlantı",
+  }[panel] || "Kayıt";
+}
+
+function ensureBackendOk(result) {
+  if (!result?.ok) throw new Error("Backend işlem onayı dönmedi.");
+  return result;
+}
+
+function notifySuccess(entityName, actionName) {
+  showToast(`${entityName} başarıyla ${actionName}.`);
+}
+
+function notifyFailure(error) {
+  showToast(`İşlem başarısız: ${error?.message || "Beklenmeyen hata"}`);
 }
 
 function renderList() {
@@ -338,11 +359,19 @@ document.addEventListener("click", async (event) => {
     const rowTitle = deleteButton.closest(".admin-list-row")?.querySelector(".row-title")?.textContent || "bu kayıt";
     const ok = window.confirm(`"${rowTitle}" kaydını silmek istediğinizden emin misiniz? Bu işlem loglanacaktır.`);
     if (!ok) return;
-    if (state.panel === "announcements") await deleteAnnouncement(itemId);
-    if (state.panel === "works") await deleteWork(itemId);
-    if (state.panel === "links") await deleteLink(itemId);
-    await refresh();
-    resetForms();
+    const panel = state.panel;
+    try {
+      let result = null;
+      if (panel === "announcements") result = await deleteAnnouncement(itemId);
+      if (panel === "works") result = await deleteWork(itemId);
+      if (panel === "links") result = await deleteLink(itemId);
+      ensureBackendOk(result);
+      await refresh();
+      resetForms();
+      notifySuccess(entityNameForPanel(panel), "silindi");
+    } catch (error) {
+      notifyFailure(error);
+    }
     return;
   }
 
@@ -385,10 +414,16 @@ announcementForm.addEventListener("submit", async (event) => {
     body: toLines(data.body),
     images: toLines(data.images),
   };
-  if (data.id) await updateAnnouncement(data.id, payload);
-  else await createAnnouncement(payload);
-  await refresh();
-  resetForms();
+  const isUpdate = Boolean(data.id);
+  try {
+    const result = isUpdate ? await updateAnnouncement(data.id, payload) : await createAnnouncement(payload);
+    ensureBackendOk(result);
+    await refresh();
+    resetForms();
+    notifySuccess("Duyuru", isUpdate ? "güncellendi" : "eklendi");
+  } catch (error) {
+    notifyFailure(error);
+  }
 });
 
 workForm.addEventListener("submit", async (event) => {
@@ -408,10 +443,16 @@ workForm.addEventListener("submit", async (event) => {
     tags: [],
     images: toLines(data.images),
   };
-  if (data.id) await updateWork(data.id, payload);
-  else await createWork(payload);
-  await refresh();
-  resetForms();
+  const isUpdate = Boolean(data.id);
+  try {
+    const result = isUpdate ? await updateWork(data.id, payload) : await createWork(payload);
+    ensureBackendOk(result);
+    await refresh();
+    resetForms();
+    notifySuccess("Çalışma", isUpdate ? "güncellendi" : "eklendi");
+  } catch (error) {
+    notifyFailure(error);
+  }
 });
 
 linkForm.addEventListener("submit", async (event) => {
@@ -423,10 +464,16 @@ linkForm.addEventListener("submit", async (event) => {
     kind: data.kind || "link",
     icon_src: data.icon_src || "",
   };
-  if (data.id) await updateLink(data.id, payload);
-  else await createLink(payload);
-  await refresh();
-  resetForms();
+  const isUpdate = Boolean(data.id);
+  try {
+    const result = isUpdate ? await updateLink(data.id, payload) : await createLink(payload);
+    ensureBackendOk(result);
+    await refresh();
+    resetForms();
+    notifySuccess("Bağlantı", isUpdate ? "güncellendi" : "eklendi");
+  } catch (error) {
+    notifyFailure(error);
+  }
 });
 
 [announcementForm, workForm].forEach((form) => {
