@@ -935,3 +935,81 @@ Duyurular liste sayfası da aynı dosyayı kullanıyor, onu da güncelliyorum.
 Yerel syntax temiz. Son kez server üzerinden yeni sürümlerin ve yeni davranış parçalarının geldiğini kontrol ediyorum.
 
 ---
+
+
+**OpenAI Codex**
+
+Tamam, bu turda şunları yaptım:
+
+- `Tümünü göster` sayfalarında kart üstündeki foto önizlemelerini kaldırdım. Artık görseller sadece karta tıklayıp detay modalını açınca görünecek.
+- Ana sayfadaki/detaydaki büyütülmüş görsele drag-pan ekledim. Görselin üstüne gelince el imleci çıkıyor, basılı tutup sürükleyebiliyorsun. `Sığdır` da tekrar merkeze alıyor.
+- Duyurular carousel gap değerini Birim Çalışmaları ile aynı yaptım ve Duyurular container genişliğini aynı referansa bağladım. Ok hizasında önceki farklı container kaynaklı sapmayı azaltacak ana düzeltme bu.
+- Cache sürümleri `20260629-9` oldu.
+
+Kontrol: `ui.js`, `listing.js`, `home.js` syntax temiz; server yeni `20260629-9` dosyalarını servis ediyor.
+
+---
+
+
+**User**
+
+bak birim açlışmalaerının teması ne ise
+
+git duyurular kısmının kodunu da birim çalışmalrı kodu gibi yap işte o zman otomaitkman düzelecektir zaten değil mi
+
+---
+
+
+**OpenAI Codex**
+
+Evet, bu mantık doğru: Duyurular aynı görünsün/hizalansın istiyorsak onu “özel duyuru carousel” olmaktan çıkarıp Birim Çalışmaları ile aynı HTML class yapısına sokmak en sağlam çözüm. Şimdi Duyurular grid’ini de `suite-cards` yapıp kart class’ını Birim Çalışmaları kartıyla aynı yapacağım.
+
+---
+
+
+**OpenAI Codex**
+
+Mevcut fark hâlâ `announcement-carousel`, `announce-grid`, `announcement-summary-card` özel sınıflarından geliyor. Bunları Duyurular’dan kaldırıp birebir `carousel-shell > suite-cards > suite-section portal-summary-card` akışına çeviriyorum.
+
+---
+
+
+**OpenAI Codex**
+
+HTML artık Birim Çalışmaları ile aynı iskelete geçti. Şimdi JS’in ürettiği Duyuru kartını da Birim Çalışmaları kartıyla aynı class’a çeviriyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi sadece JS sürümünü yükseltiyorum; yoksa tarayıcı eski `home.js` ile Duyuruları yine eski kart class’ıyla basabilir.
+
+---
+
+
+**OpenAI Codex**
+
+Değişiklik küçük ama kritik; syntax ve canlı HTML/JS kontrolünü yapıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Aynen, dediğin gibi yaptım: Duyurular kısmını artık özel `announcement-carousel / announce-grid / announcement-summary-card` yapısından çıkardım.
+
+Şimdi Duyurular da Birim Çalışmaları ile aynı yapıda:
+
+- `carousel-shell`
+- `suite-cards`
+- `suite-section portal-summary-card`
+
+Yani iki bölüm aynı CSS yolundan geçiyor. `home.js` sürümünü de `20260629-10` yaptım ki eski kart class’ı cache’ten gelmesin.
+
+Kontrol ettim:
+- `home.js` syntax temiz.
+- Ana sayfada artık `announcement-carousel` / `announce-grid` sınıfları yok.
+- Duyuru kartları da `portal-summary-card` olarak basılıyor.
+
+---

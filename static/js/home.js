@@ -109,7 +109,7 @@ function renderAnnouncements() {
     const isVisible = index >= state.announcementOffset && index < state.announcementOffset + visibleCount;
     const hiddenAttrs = isVisible ? "" : ' style="visibility:hidden;opacity:0;pointer-events:none;" aria-hidden="true"';
     return `
-    <article class="suite-section announcement-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-announcement" data-id="${item.id}"${hiddenAttrs}>
+    <article class="suite-section portal-summary-card ${isVisible ? "is-active-slide" : ""}" data-action="show-announcement" data-id="${item.id}"${hiddenAttrs}>
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(item.title)}</span>
         <span class="header-bg">${bgLines}</span>
