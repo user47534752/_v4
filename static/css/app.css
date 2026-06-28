@@ -503,3 +503,50 @@ body.dark-theme .links-section-head h2 {
   font-size: 11px;
   font-weight: 800;
 }
+
+.detail-gallery figure {
+  aspect-ratio: 16 / 10 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 10px !important;
+}
+
+.detail-gallery img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+.image-zoom-frame img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+.link-icon:has(img) {
+  width: 58px !important;
+  height: 58px !important;
+  padding: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.link-icon img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.announcement-carousel .carousel-left {
+  left: 0 !important;
+}
+
+.announcement-carousel .carousel-right {
+  right: 0 !important;
+}

@@ -50,7 +50,7 @@ function ensureImageZoomDialog() {
     const action = event.target.closest("[data-zoom-action]")?.dataset.zoomAction;
     if (!action) return;
     if (action === "close") imageZoomDialog.close();
-    if (action === "reset") setImageZoomScale(1);
+    if (action === "reset") fitZoomedImage();
     if (action === "in") setImageZoomScale(imageZoomScale + .25);
     if (action === "out") setImageZoomScale(imageZoomScale - .25);
   });
@@ -68,6 +68,13 @@ function setImageZoomScale(nextScale) {
   imageZoomDialog?.querySelector("img")?.style.setProperty("--image-zoom-scale", String(imageZoomScale));
 }
 
+function fitZoomedImage() {
+  const image = imageZoomDialog?.querySelector("img");
+  if (!image) return;
+  image.style.removeProperty("--image-zoom-scale");
+  setImageZoomScale(1);
+}
+
 export function bindImageZoom(root = document) {
   if (!root || root.dataset?.imageZoomBound) return;
   if (root.dataset) root.dataset.imageZoomBound = "true";
@@ -79,8 +86,8 @@ export function bindImageZoom(root = document) {
     const zoomedImage = dialog.querySelector("img");
     zoomedImage.src = image.currentSrc || image.src;
     zoomedImage.alt = image.alt || "";
-    setImageZoomScale(1);
-    zoomedImage.onload = () => setImageZoomScale(1);
+    fitZoomedImage();
+    zoomedImage.onload = fitZoomedImage;
     dialog.showModal();
   });
 }

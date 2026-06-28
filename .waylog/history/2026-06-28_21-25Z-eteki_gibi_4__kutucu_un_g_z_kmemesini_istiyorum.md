@@ -600,3 +600,105 @@ Kontrol:
 - Çalışan `/admin` sayfasında yeni toast alanı ve yeni JS sürümü geliyor.
 
 ---
+
+
+**User**
+
+eklenen resimler anasayfada önizlenirken tam sığmıyor yataylamasına sığdırılıyor ama dikaylemesine de sığmalı ve sığdır tuuşu çalışmıyor onu da check etmen gerek.
+
+bağlantılar anasayfada eklenen logolar tam gözüksün böyle iki kare içinde sıkışıp küçük kalıyor
+
+duyurular kısmında yer alan sol sağ oklarının konumlarını birim çalışmaları ile hizala
+
+---
+
+
+**OpenAI Codex**
+
+Üç ayrı görsel davranış var burada: detay önizleme zoom/sığdır, bağlantı logo boyutu, duyuru ok hizası. CSS ve ilgili JS’i beraber okuyup aynı turda düzelteceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Sorunun kaynağı büyük ihtimalle yeni `app.css` ile eski `app.legacy.css` katmanlarının üst üste binmesi: bazı eski kurallar hâlâ ölçü dayatıyor. Şimdi son katmanda daha net override yazacağım; ayrıca zoom reset’in görünür biçimde yeniden sığdırması için JS’te reset akışını güçlendireceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Evet, detay galerisindeki küçük önizlemede eski `object-fit: cover` kuralı görseli kırpıyor. Bağlantı logolarında da eski `22px` logo sınırı kalmış; onları özel yüklenen görselde daha büyük ve tek çerçeve gibi gösterecek şekilde ayırıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+JS tarafında reset artık değişkeni temizleyip yeniden `contain` ölçüsüne dönüyor. Şimdi CSS’in sonuna güçlü ama dar kapsamlı kuralları ekliyorum: galeri hem yatay hem dikey sığacak, bağlantıdaki özel logo büyüyecek, duyuru okları çalışma oklarıyla aynı kenar hizasına gelecek.
+
+---
+
+
+**OpenAI Codex**
+
+Stil/JS dosyaları değiştiği için cache parametrelerini de artırıyorum; yoksa tarayıcı eski dosyayı göstermeye devam edebilir.
+
+---
+
+
+**OpenAI Codex**
+
+Bir komutta PowerShell wildcard biçimi takıldı ama gerekli dosyaları okudum. Şimdi sürümleri `20260629-6` yapıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Liste sayfalarında da aynı detay modalı kullanılıyor, o yüzden oradaki `ui.js` sürümünü de eşliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Şimdi HTML’deki CSS/JS cache parametrelerini de aynı sürüme çekiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Değişiklikler tamam; şimdi JS syntax ve canlı sayfanın yeni cache sürümleriyle geldiğini kontrol ediyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Sözdizimi temiz. Bir de çalışan server üzerinden yeni HTML/CSS/JS’in gerçekten servis edildiğine bakıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Canlı CSS doğrulandı. JS kontrolünde regex tırnak kaçışı takıldı; küçük bir komutla onu tekrar alıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, üç noktayı düzelttim:
+
+- Detay görselleri artık önizlemede kırpılmadan hem yatay hem dikey `contain` ile sığıyor.
+- Büyütülen görselde `Sığdır` tuşu artık zoom değerini temizleyip görseli yeniden tam sığdırıyor.
+- Bağlantılar bölümünde admin’den eklenen logolar artık 22px’e sıkışmıyor; tek çerçeve içinde daha büyük ve tam görünüyor.
+- Duyurular carousel oklarını, Birim Çalışmaları oklarıyla aynı kenar hizasına çektim.
+
+Cache için ana sayfa/liste sayfalarında sürümleri `20260629-6` yaptım. Kontrol olarak `node --check` temiz geçti ve çalışan server yeni dosyaları servis ediyor.
+
+---
