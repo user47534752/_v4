@@ -70,9 +70,10 @@ function closeModal(dialog) {
 
 function renderWorks() {
   const pool = state.portal.works.filter(matchesQuery);
-  const items = visibleItems(pool, state.workOffset);
-  setArrowState(els.workArrows, pool.length <= 3);
-  els.worksGrid.innerHTML = items.map((work) => `
+  state.workOffset = clampCarouselOffset(state.workOffset, pool.length);
+  setCarouselPosition(els.worksGrid, state.workOffset);
+  setArrowState(els.workArrows, state.workOffset, pool.length);
+  els.worksGrid.innerHTML = pool.map((work) => `
     <article class="suite-section portal-summary-card" data-action="show-work" data-id="${work.id}">
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(work.title)}</span>
@@ -94,9 +95,10 @@ function renderWorks() {
 
 function renderAnnouncements() {
   const pool = state.portal.announcements.filter(matchesQuery);
-  const items = visibleItems(pool, state.announcementOffset);
-  setArrowState(els.announcementArrows, pool.length <= 3);
-  els.announcementsGrid.innerHTML = items.map((item) => `
+  state.announcementOffset = clampCarouselOffset(state.announcementOffset, pool.length);
+  setCarouselPosition(els.announcementsGrid, state.announcementOffset);
+  setArrowState(els.announcementArrows, state.announcementOffset, pool.length);
+  els.announcementsGrid.innerHTML = pool.map((item) => `
     <article class="suite-section announcement-summary-card" data-action="show-announcement" data-id="${item.id}">
       <div class="suite-header active">
         <span class="suite-header-title">${escapeHtml(item.title)}</span>
@@ -116,57 +118,45 @@ function renderAnnouncements() {
     </article>`).join("");
 }
 
-function visibleItems(items, offset) {
-  if (items.length <= 3) return items;
-  return [0, 1, 2].map((step) => items[(offset + step) % items.length]);
+function maxCarouselOffset(itemCount) {
+  return Math.max(0, itemCount - visibleCarouselCount());
 }
 
-function setArrowState(arrows, disabled) {
+function clampCarouselOffset(offset, itemCount) {
+  return Math.min(Math.max(0, offset), maxCarouselOffset(itemCount));
+}
+
+function visibleCarouselCount() {
+  return window.matchMedia("(max-width: 980px)").matches ? 1 : 3;
+}
+
+function setArrowState(arrows, offset, itemCount) {
+  const maxOffset = maxCarouselOffset(itemCount);
+  const visibleCount = visibleCarouselCount();
   arrows.forEach((arrow) => {
+    const direction = Number(arrow.dataset.direction);
+    const disabled = itemCount <= visibleCount || (direction < 0 ? offset <= 0 : offset >= maxOffset);
     arrow.disabled = disabled;
     arrow.classList.toggle("is-disabled", disabled);
-    arrow.hidden = Boolean(disabled);
+    arrow.hidden = itemCount <= visibleCount;
   });
+}
+
+function setCarouselPosition(grid, offset) {
+  grid.style.setProperty("--carousel-offset", String(offset));
 }
 
 function slide(kind, direction) {
   const key = kind === "works" ? "workOffset" : "announcementOffset";
   const items = kind === "works" ? state.portal.works.filter(matchesQuery) : state.portal.announcements.filter(matchesQuery);
-  if (items.length <= 3) return;
+  if (items.length <= visibleCarouselCount()) return;
   const grid = kind === "works" ? els.worksGrid : els.announcementsGrid;
-  if (grid.dataset.sliding === "true") return;
+  const nextOffset = clampCarouselOffset(state[key] + direction, items.length);
+  if (nextOffset === state[key]) return;
 
-  const outClass = direction > 0 ? "carousel-slide-out-left" : "carousel-slide-out-right";
-  const inClass = direction > 0 ? "carousel-slide-in-right" : "carousel-slide-in-left";
-
-  grid.dataset.sliding = "true";
-  grid.classList.remove(
-    "slide-from-left",
-    "slide-from-right",
-    "slide-out-left",
-    "slide-out-right",
-    "carousel-slide-out-left",
-    "carousel-slide-out-right",
-    "carousel-slide-in-left",
-    "carousel-slide-in-right",
-    "carousel-slide-active",
-  );
-  grid.classList.add(outClass);
-
-  window.setTimeout(() => {
-    state[key] = (state[key] + direction + items.length) % items.length;
-    if (kind === "works") renderWorks();
-    else renderAnnouncements();
-    grid.classList.remove(outClass);
-    grid.classList.add(inClass);
-    void grid.offsetWidth;
-    grid.classList.add("carousel-slide-active");
-    bindCardHoverFields();
-    window.setTimeout(() => {
-      grid.classList.remove(inClass, "carousel-slide-active");
-      grid.dataset.sliding = "false";
-    }, 340);
-  }, 260);
+  state[key] = nextOffset;
+  setCarouselPosition(grid, nextOffset);
+  setArrowState(kind === "works" ? els.workArrows : els.announcementArrows, nextOffset, items.length);
 }
 
 function renderLinks() {
@@ -413,6 +403,13 @@ els.search.addEventListener("input", () => {
 
 els.searchClear.addEventListener("click", () => {
   resetSearch();
+});
+
+window.addEventListener("resize", () => {
+  if (!state.portal) return;
+  renderWorks();
+  renderAnnouncements();
+  bindCardHoverFields();
 });
 
 els.requestForm.addEventListener("submit", async (event) => {

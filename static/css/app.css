@@ -2765,6 +2765,23 @@ body.dark-theme .header-widgets .theme-icon.icon-button {
   box-shadow: none !important;
 }
 
+/* Keep the remaining theme control optically centered in the header widget. */
+.header-widgets .theme-icon.icon-button {
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important;
+}
+
+.header-widgets .theme-icon.icon-button:hover {
+  transform: translateY(-1px) !important;
+}
+
+.header-widgets svg.theme-glyph {
+  display: block !important;
+  flex: 0 0 auto !important;
+  margin: auto !important;
+}
+
 /* Transparent single-card sections and smooth carousel motion. */
 .wide-section,
 .wide-section:hover,
@@ -2896,4 +2913,130 @@ body.dark-theme .header-widgets .theme-icon.icon-button {
 .announce-grid.carousel-slide-active {
   transform: translateX(0) !important;
   transition: transform .34s cubic-bezier(.22,.61,.36,1) !important;
+}
+
+/* One-card carousel motion: the data already advances by one item. */
+.suite-cards {
+  --carousel-card-step: calc((100% + 22px) / 3);
+}
+
+.announce-grid {
+  --carousel-card-step: calc((100% + 20px) / 3);
+}
+
+.suite-cards.carousel-slide-out-left,
+.announce-grid.carousel-slide-out-left {
+  transform: translateX(calc(-1 * var(--carousel-card-step))) !important;
+}
+
+.suite-cards.carousel-slide-out-right,
+.announce-grid.carousel-slide-out-right {
+  transform: translateX(var(--carousel-card-step)) !important;
+}
+
+.suite-cards.carousel-slide-in-right,
+.announce-grid.carousel-slide-in-right {
+  transform: translateX(var(--carousel-card-step)) !important;
+}
+
+.suite-cards.carousel-slide-in-left,
+.announce-grid.carousel-slide-in-left {
+  transform: translateX(calc(-1 * var(--carousel-card-step))) !important;
+}
+
+body.dark-theme .all-link,
+body.dark-theme .button-link.all-link {
+  color: var(--secondary-base) !important;
+}
+
+body.dark-theme .all-link:hover,
+body.dark-theme .button-link.all-link:hover {
+  color: #ff9a79 !important;
+}
+
+@media (max-width: 980px) {
+  .suite-cards,
+  .announce-grid {
+    --carousel-card-step: 100%;
+  }
+}
+
+/* Stable carousel track: show three cards, move by exactly one card. */
+.carousel-shell {
+  overflow: hidden !important;
+  padding: 8px 12px 24px !important;
+  margin: -8px -12px -24px !important;
+}
+
+.carousel-shell .suite-cards {
+  --carousel-gap: 22px;
+  --carousel-card-width: calc((100% - (var(--carousel-gap) * 2)) / 3);
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  gap: var(--carousel-gap) !important;
+  transform: translateX(calc(var(--carousel-offset, 0) * -1 * (var(--carousel-card-width) + var(--carousel-gap)))) !important;
+  transition: transform .34s cubic-bezier(.22,.61,.36,1) !important;
+}
+
+.carousel-shell .suite-section.portal-summary-card,
+.carousel-shell .suite-section.announcement-summary-card {
+  flex: 0 0 var(--carousel-card-width) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.announcement-carousel .announce-grid {
+  --carousel-gap: 20px;
+  --carousel-card-width: calc((100% - (var(--carousel-gap) * 2)) / 3);
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  gap: var(--carousel-gap) !important;
+  width: 100% !important;
+  max-width: none !important;
+  transform: translateX(calc(var(--carousel-offset, 0) * -1 * (var(--carousel-card-width) + var(--carousel-gap)))) !important;
+  transition: transform .34s cubic-bezier(.22,.61,.36,1) !important;
+}
+
+.announcement-carousel .announcement-summary-card {
+  flex: 0 0 var(--carousel-card-width) !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.carousel-shell .suite-cards.carousel-slide-out-left,
+.carousel-shell .suite-cards.carousel-slide-out-right,
+.carousel-shell .suite-cards.carousel-slide-in-left,
+.carousel-shell .suite-cards.carousel-slide-in-right,
+.carousel-shell .suite-cards.carousel-slide-active,
+.announcement-carousel .announce-grid.carousel-slide-out-left,
+.announcement-carousel .announce-grid.carousel-slide-out-right,
+.announcement-carousel .announce-grid.carousel-slide-in-left,
+.announcement-carousel .announce-grid.carousel-slide-in-right,
+.announcement-carousel .announce-grid.carousel-slide-active {
+  transition: transform .34s cubic-bezier(.22,.61,.36,1) !important;
+}
+
+.carousel-left {
+  left: 0 !important;
+}
+
+.carousel-right {
+  right: 0 !important;
+}
+
+@media (max-width: 980px) {
+  .carousel-shell .suite-cards,
+  .announcement-carousel .announce-grid {
+    --carousel-card-width: 100%;
+    --carousel-gap: 16px;
+  }
+
+  .carousel-shell .suite-section.portal-summary-card,
+  .carousel-shell .suite-section.announcement-summary-card,
+  .announcement-carousel .announcement-summary-card {
+    flex-basis: 100% !important;
+  }
 }
