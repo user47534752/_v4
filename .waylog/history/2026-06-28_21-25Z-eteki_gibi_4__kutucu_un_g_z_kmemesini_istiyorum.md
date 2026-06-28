@@ -1027,3 +1027,103 @@ hah oldu işte bak
 Süper, işte bu. Duyurular aynı yapıya geçince hizalama da kendiliğinden oturdu.
 
 ---
+
+
+**User**
+
+sağol şimdi anasayfada sitede rsmi açınca genişliğe sığdırıyor ama dikeyylemesine de sığdırmalı
+
+---
+
+
+**OpenAI Codex**
+
+Haklısın; zoom’da “doğal boyut + max” yaklaşımı bazı oranlarda hâlâ genişliği baz alıp dikeyi taşırabiliyor. Bunu daha kesin yapacağım: görsel elemanı frame’i tamamen kaplayacak, içindeki bitmap `object-fit: contain` ile hem genişlik hem yükseklik sınırına sığacak.
+
+---
+
+
+**OpenAI Codex**
+
+Şu anda CSS’te eski zoom override kalmış görünüyor; son eklediğimiz daha net kurallar dosyada yok. Şimdi bunu tekrar ve daha basit şekilde son override olarak ekliyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Bunu CSS’in en sonuna koyacağım ki eski kurallar tekrar ezemesin. Sonra cache’i yükseltip canlı sayfadan yeni CSS’in geldiğini kontrol edeceğim.
+
+---
+
+
+**OpenAI Codex**
+
+Zoom sığdırma kuralı eklendi. Şimdi `app.css` sürümünü yükseltiyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Sürüm güncellendi; şimdi dosya ve canlı servis kontrolünü yapıyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, anasayfada resmi açınca artık hem genişliğe hem dikey yüksekliğe göre sığacak şekilde son CSS override’ını ekledim.
+
+Değişen mantık:
+- Zoom modalı tam viewport: `100vw / 100dvh`
+- Görsel alanı toolbar için üst boşluk bırakıyor.
+- Görsel `width: 100%`, `height: 100%`, `object-fit: contain` ile iki eksende de sığıyor.
+- Drag için `grab/grabbing` davranışı korunuyor.
+
+Cache için `app.css` sürümü `20260629-11` oldu ve server yeni CSS’i servis ediyor.
+
+---
+
+
+**User**
+
+yok daha çok taşmış ekrana özetle sığsın resim işte
+
+---
+
+
+**OpenAI Codex**
+
+Anladım, amaç zoom/pan falan değil önce net şekilde “resim ekrana sığsın”. Önceki override’da img kutusunu tam alan yaptığım için bazı tarayıcı hesaplarında ters tepmiş olabilir. Şimdi daha düz ve kesin yapıyorum: resim absolute alan içinde kalacak, `inset` ile sınır çizilecek, `object-fit: contain` iki eksende de uygulanacak.
+
+---
+
+
+**OpenAI Codex**
+
+Bu daha sert bir “sığdırma kutusu” oldu: görsel toolbar’ın altındaki kalan alanın dışına çıkamayacak. Şimdi cache sürümünü tekrar yükseltip kontrol ediyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Sürüm değişti; canlı CSS’te bu son kuralların geldiğini doğruluyorum.
+
+---
+
+
+**OpenAI Codex**
+
+Tamam, bu sefer daha basit ve katı yaptım: açılan resim için ayrı bir görünür alan tanımladım ve resim o alanın dışına çıkamayacak.
+
+Yeni kural:
+- Modal tam ekran.
+- Resim alanı toolbar’ın altından başlıyor.
+- Resim `object-fit: contain` ile o alanın içinde kalıyor.
+- Dışarı taşan kısım `overflow: hidden` ile kesiliyor.
+
+Cache `app.css?v=20260629-12` oldu. Hard refresh sonrası artık resim ekrana sığmalı.
+
+---
